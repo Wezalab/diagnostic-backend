@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const testSchema = mongoose.Schema({
+const recommendationSchema = mongoose.Schema({
   value: { type: String },
   validation: {
     actions_from_coach: [
@@ -30,7 +30,7 @@ const projectSchema = mongoose.Schema({
   pitch_text: { type: String },
   pitch_deck_url: { type: String },
   website: { type: String },
-  test: { type: testSchema },
+  recommendation: { type: recommendationSchema },
 });
 
 const Project = mongoose.model("Project", projectSchema);
