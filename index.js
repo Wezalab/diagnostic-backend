@@ -14,11 +14,11 @@ app.use(morgan("dev"));
 const PORT = process.env.PORT || 4000;
 
 // routes
-app.use("/", (req, res) =>
+app.use("/test", (req, res) =>
   res.json("diagnostic api responding successfully ...")
 );
 app.use("/auth", require("./routes/auth-routes"));
-app.use("/project", require("./routes/project-routes"));
+app.use("/api/projects", require("./routes/project-routes"));
 
 app.listen(PORT, () => {
   console.log(`Listening on port ${PORT}`);

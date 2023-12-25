@@ -28,7 +28,7 @@ exports.signup = async (req, res) => {
 
     // hashing password
     const saltRounds = 16;
-    const hashedPassword = bcrypt.hash(password, saltRounds);
+    const hashedPassword = await bcrypt.hash(password, saltRounds);
 
     // generate an image
     if (!profile_picture) {
@@ -53,6 +53,7 @@ exports.signup = async (req, res) => {
     return res.status(400).json({ message: error.message });
   }
 };
+
 exports.login = async (req, res) => {
   try {
     const { username, password } = req.body;

@@ -9,7 +9,7 @@ const recommendationSchema = mongoose.Schema({
         isCompletedByUser: { type: Boolean, default: false },
       },
     ],
-    value_from_user: { type: String },
+    completed_by_user: { type: String },
   },
 });
 
@@ -26,7 +26,10 @@ const projectSchema = mongoose.Schema({
   full_address: { type: String },
   secteur: { type: String, enum: ["AGRO-TRANSFORMATION", "SERVICE"] },
   type_of_customers: { type: [String], required: true },
-  customer_base: { type: String, required: true },
+  customer_base: {
+    type: [String],
+    enum: ["URBAN-BASED-CUSTOMERS", "RURAL-BASED-CUSTOMERS"],
+  },
   pitch_text: { type: String },
   pitch_deck_url: { type: String },
   website: { type: String },
