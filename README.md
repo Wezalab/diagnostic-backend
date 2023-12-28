@@ -2,7 +2,6 @@
 
 Diagnostic 360 Degré
 
-
 ## Getting Started
 
 The project is private to an organization and licensed MIT
