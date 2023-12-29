@@ -5,7 +5,7 @@ const crypto = require("crypto");
 
 exports.signup = async (req, res) => {
   try {
-    const { name, email, mobile, username, password, profile_picture } = req.body;
+    const { name, email, mobile, sex, username, password, profile_picture } = req.body;
 
     let randomImageId = 0;
     let randomProfilePicture = "";
@@ -41,6 +41,7 @@ exports.signup = async (req, res) => {
       email,
       mobile,
       username,
+      sex,
       password: hashedPassword,
       profile_picture: profile_picture || randomProfilePicture,
     });
@@ -75,6 +76,7 @@ exports.login = async (req, res) => {
       name: foundUser.name,
       email: foundUser.email,
       mobile: foundUser.mobile,
+      sex:foundUser.sex,
       username: foundUser.username,
       profile_picture: foundUser.profile_picture,
     };
