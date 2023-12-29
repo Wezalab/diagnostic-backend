@@ -6,7 +6,7 @@ exports.findAll = async (req, res) => {
     const projects = await Project.find()
     .populate({
       path: "owner",
-      select: "company_name,description, founding_date,mission,valeur,objectifs,smart_ip,objectif_social,phone,full_address,secteur,type_of_customers,customer_base,pitch_text,pitch_deck_url,website",
+      select:"name,email, mobile, username, sex, password, role, profile_picture, cover_picture,"
     })
     // .populate({
     //   path: "recommendation.user",
