@@ -5,25 +5,24 @@ const crypto = require("crypto");
 
 exports.signup = async (req, res) => {
   try {
-    const { name, email, mobile, username, password, profile_picture } =
-      req.body;
+    const { name, email, mobile, username, password, profile_picture } = req.body;
 
     let randomImageId = 0;
     let randomProfilePicture = "";
 
     const existingEmail = await User.findOne({ email });
     if (existingEmail) {
-      return res.status(409).json({ message: "Email already exists" });
+      return res.status(409).json({ message: "L'e-mail existe déjà" });
     }
 
     const existingMobile = await User.findOne({ mobile });
     if (existingMobile) {
-      return res.status(409).json({ message: "Phone Number already exists" });
+      return res.status(409).json({ message: "Le numéro de téléphone existe déjà" });
     }
 
     const existingUsername = await User.findOne({ username });
     if (existingUsername) {
-      return res.status(409).json({ message: "Username already exists" });
+      return res.status(409).json({ message: "Le nom d'utilisateur existe déjà" });
     }
 
     // hashing password
@@ -37,7 +36,6 @@ exports.signup = async (req, res) => {
     }
 
     // creating a new user
-
     const newUser = new User({
       name,
       email,
@@ -48,7 +46,7 @@ exports.signup = async (req, res) => {
     });
 
     await newUser.save();
-    return res.status(200).json({ message: "User created successfully" });
+    return res.status(200).json({ message: "Utilisateur créé avec succès" });
   } catch (error) {
     return res.status(400).json({ message: error.message });
   }
@@ -61,13 +59,13 @@ exports.login = async (req, res) => {
     // check if the user exists
     const foundUser = await User.findOne({ username });
     if (!foundUser) {
-      return res.status(404).json({ message: "User not found" });
+      return res.status(404).json({ message: "Utilisateur non trouvé" });
     }
 
     // compare password
     const passwordMatch = await bcrypt.compare(password, foundUser.password);
     if (!passwordMatch) {
-      return res.status(400).json({ message: "Invalid Password" });
+      return res.status(400).json({ message: "Mot de passe invalide" });
     }
 
     // generate token
@@ -83,7 +81,7 @@ exports.login = async (req, res) => {
 
     const token = jwt.sign(userData, SECRET_KEY, { expiresIn: "24h" });
     return await res.status(200).json({
-      message: "Login successful",
+      message: "Connexion réussie",
       user: {
         token,
         user: userData,
@@ -94,6 +92,6 @@ exports.login = async (req, res) => {
   }
 };
 
-exports.resetPassword = async (req, res) => {};
+exports.resetPassword = async (req, res) => { };
 
-exports.profile = async (req, res) => {};
+exports.profile = async (req, res) => { };
