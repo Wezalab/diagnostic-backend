@@ -48,7 +48,7 @@ exports.signup = async (req, res) => {
     });
 
     await newUser.save();
-    return res.status(200).json({ message: "Utilisateur créé avec succès" });
+    return res.status(200).json({ message: "Utilisateur créé avec succès", email, password  });
   } catch (error) {
     return res.status(400).json({ message: error.message });
   }
