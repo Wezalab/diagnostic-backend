@@ -4,11 +4,14 @@ const {
   login,
   resetPassword,
   profile,
+  findAll,
 } = require("../controllers/auth-controller");
 
 router.post("/signup", signup);
 router.post("/login", login);
 router.post("/reset-password", resetPassword);
 router.get("/profile", profile);
+router.get("/", findAll);
+
 
 module.exports = router;

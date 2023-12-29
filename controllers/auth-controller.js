@@ -20,10 +20,10 @@ exports.signup = async (req, res) => {
       return res.status(409).json({ message: "Le numéro de téléphone existe déjà" });
     }
 
-    const existingUsername = await User.findOne({ username });
-    if (existingUsername) {
-      return res.status(409).json({ message: "Le nom d'utilisateur existe déjà" });
-    }
+    // const existingUsername = await User.findOne({ username });
+    // if (existingUsername) {
+    //   return res.status(409).json({ message: "Le nom d'utilisateur existe déjà" });
+    // }
 
     // hashing password
     const saltRounds = 16;
@@ -79,6 +79,7 @@ exports.login = async (req, res) => {
       sex:foundUser.sex,
       username: foundUser.username,
       profile_picture: foundUser.profile_picture,
+      cover_picture: foundUser.cover_picture,
     };
 
     const token = jwt.sign(userData, SECRET_KEY, { expiresIn: "24h" });
@@ -91,6 +92,15 @@ exports.login = async (req, res) => {
     });
   } catch (error) {
     return res.status(500).json({ error: error.message });
+  }
+};
+
+exports.findAll = async (req, res) => {
+  try {
+    const users = await User.find().exec();
+    return res.status(200).json(users);
+  } catch (error) {
+    return res.status(400).json({ message: error.message });
   }
 };
 
