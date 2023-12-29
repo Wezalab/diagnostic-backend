@@ -15,7 +15,7 @@ const recommendationSchema = mongoose.Schema({
 
 const projectSchema = mongoose.Schema({
   company_name: { type: String, required: true },
-  description: { type: String, unique: true },
+  description: { type: String},
   founding_date: { type: Date },
   mission: { type: String },
   valeur: { type: String },
