@@ -16,16 +16,16 @@ const recommendationSchema = mongoose.Schema({
 const projectSchema = mongoose.Schema({
   company_name: { type: String, required: true },
   description: { type: String, unique: true },
-  founding_date: { type: Date, required: true },
-  mission: { type: String, unique: true },
-  valeur: { type: String, required: true },
-  objectifs: { type: String, required: true },
+  founding_date: { type: Date },
+  mission: { type: String },
+  valeur: { type: String },
+  objectifs: { type: String},
   smart_ip: { type: String },
   objectif_social: { type: String },
-  phone: { type: String, required: true },
+  phone: { type: String},
   full_address: { type: String },
   secteur: { type: String, enum: ["AGRO-TRANSFORMATION", "SERVICE"] },
-  type_of_customers: { type: [String], required: true },
+  type_of_customers: { type: [String]},
   customer_base: {
     type: [String],
     enum: ["URBAN-BASED-CUSTOMERS", "RURAL-BASED-CUSTOMERS"],
@@ -33,6 +33,7 @@ const projectSchema = mongoose.Schema({
   pitch_text: { type: String },
   pitch_deck_url: { type: String },
   website: { type: String },
+  owner: { type: mongoose.Schema.Types.ObjectId, ref: "User" }, // Owner
   recommendation: { type: recommendationSchema },
 });
 

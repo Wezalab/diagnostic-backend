@@ -2,7 +2,16 @@ const Project = require("../models/project_model");
 
 exports.findAll = async (req, res) => {
   try {
-    const projects = await Project.find().exec();
+    // const projects = await Project.find().exec();
+    const projects = await Project.find()
+    .populate({
+      path: "owner",
+      select: "company_name,description, founding_date,mission,valeur,objectifs,smart_ip,objectif_social,phone,full_address,secteur,type_of_customers,customer_base,pitch_text,pitch_deck_url,website",
+    })
+    .populate({
+      path: "recommendation.user",
+      select: "company_name,description, founding_date,mission,valeur,objectifs,smart_ip,objectif_social,phone,full_address,secteur,type_of_customers,customer_base,pitch_text,pitch_deck_url,website,owner",
+    })
     return res.status(200).json(projects);
   } catch (error) {
     return res.status(400).json({ message: error.message });
