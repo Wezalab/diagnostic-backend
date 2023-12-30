@@ -13,5 +13,4 @@ router.post("/reset-password", resetPassword);
 router.get("/profile", profile);
 router.get("/", findAll);
 
-
 module.exports = router;

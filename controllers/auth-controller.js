@@ -5,7 +5,21 @@ const crypto = require("crypto");
 
 exports.signup = async (req, res) => {
   try {
-    const { name, email, mobile, sex, username, password, profile_picture, cover_picture } = req.body;
+    const {
+      name,
+      email,
+      mobile,
+      mobile_secondaire,
+      sex,
+      username,
+      password,
+      lieu_de_naissance,
+      date_de_naissance,
+      province,
+      ville,
+      profile_picture,
+      cover_picture,
+    } = req.body;
 
     let randomImageId = 0;
     let randomProfilePicture = "";
@@ -17,7 +31,9 @@ exports.signup = async (req, res) => {
 
     const existingMobile = await User.findOne({ mobile });
     if (existingMobile) {
-      return res.status(409).json({ message: "Le numéro de téléphone existe déjà" });
+      return res
+        .status(409)
+        .json({ message: "Le numéro de téléphone existe déjà" });
     }
 
     // const existingUsername = await User.findOne({ username });
@@ -40,15 +56,22 @@ exports.signup = async (req, res) => {
       name,
       email,
       mobile,
+      mobile_secondaire,
       username,
-      sex,
       password: hashedPassword,
+      sex,
+      lieu_de_naissance,
+      date_de_naissance,
+      province,
+      ville,
       profile_picture: profile_picture || randomProfilePicture,
-      cover_picture
+      cover_picture,
     });
 
     await newUser.save();
-    return res.status(200).json({ message: "Utilisateur créé avec succès", email, password  });
+    return res
+      .status(200)
+      .json({ message: "Utilisateur créé avec succès", email, password });
   } catch (error) {
     return res.status(400).json({ message: error.message });
   }
@@ -77,7 +100,7 @@ exports.login = async (req, res) => {
       name: foundUser.name,
       email: foundUser.email,
       mobile: foundUser.mobile,
-      sex:foundUser.sex,
+      sex: foundUser.sex,
       username: foundUser.username,
       profile_picture: foundUser.profile_picture,
       cover_picture: foundUser.cover_picture,
@@ -105,6 +128,6 @@ exports.findAll = async (req, res) => {
   }
 };
 
-exports.resetPassword = async (req, res) => { };
+exports.resetPassword = async (req, res) => {};
 
-exports.profile = async (req, res) => { };
+exports.profile = async (req, res) => {};
