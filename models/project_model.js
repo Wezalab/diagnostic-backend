@@ -24,7 +24,8 @@ const projectSchema = mongoose.Schema({
   objectif_social: { type: String },
   phone: { type: String},
   full_address: { type: String },
-  secteur: { type: String, enum: ["AGRO-TRANSFORMATION", "SERVICE"] },
+  secteur: { type: String, enum: ["AGRO-TRANSFORMATION", "SERVICE", "AUTRE"] },
+  stage:  { type: [String]},
   type_of_customers: { type: [String]},
   customer_base: {
     type: [String],
