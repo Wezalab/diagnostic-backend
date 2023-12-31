@@ -107,6 +107,8 @@ exports.login = async (req, res) => {
     };
 
     const token = jwt.sign(userData, SECRET_KEY, { expiresIn: "24h" });
+
+    // envoyer email notifiant la creation du compte et demenadant son activation
     return await res.status(200).json({
       message: "Connexion réussie",
       user: {
