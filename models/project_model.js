@@ -30,7 +30,7 @@ const projectSchema = mongoose.Schema({
   type_of_customers: { type: [String]},
   customer_base: {
     type: [String],
-    enum: ["URBAN-BASED-CUSTOMERS", "RURAL-BASED-CUSTOMERS"],
+    enum: ["Clientèle urbaine", "Clientèle rurale"],
   },
   pitch_text: { type: String },
   pitch_deck_url: { type: String },
