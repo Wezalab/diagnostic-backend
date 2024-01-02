@@ -174,7 +174,7 @@ exports.resetPassword = async (req, res) => {
         <a href="${resetLink}">${resetLink}</a>
         <p>If you did not request a password reset, you can ignore this email.</p>
         <p>Best regards,<br>YourApp Team</p>
-        <img src="./img/transforme.jpeg" alt="transforme image" width="300" height="200">
+        <img src="https://transforme.cd/storage/settings/September2023/w9j8CYEpPXjQ6r9PiRPS.png" alt="transforme image" width="300" height="150">
       `,
     };
 
