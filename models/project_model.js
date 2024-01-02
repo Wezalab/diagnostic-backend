@@ -39,5 +39,5 @@ const projectSchema = mongoose.Schema({
   recommendation: { type: recommendationSchema },
 });
 
-const Project = mongoose.model("Projects", projectSchema);
+const Project = mongoose.model("Project", projectSchema);
 module.exports = Project;
