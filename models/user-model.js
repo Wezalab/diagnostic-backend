@@ -19,6 +19,11 @@ const userSchema = mongoose.Schema({
   role: { type: String, default: "USER" },
   profile_picture: { type: String },
   cover_picture: { type: String },
+  status: {
+    type: String,
+    enum: ["ACTIVATED", "DEACTIVATED"],
+    default: "DEACTIVATED",
+  },
 });
 
 const User = mongoose.model("User", userSchema);
