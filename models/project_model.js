@@ -241,11 +241,11 @@ const evaluationPitchDeckUrlSchema = mongoose.Schema({
 });
 
 const projectSchema = mongoose.Schema({
-  company_name: { type: String, required: true },
+  company_name: { type: String, required: true, trim: true },
   company_name_evaluation: { type: [evaluationCompanyNameSchema], default: [] },
   logo: { type: String },
   logo_evaluation: { type: [evaluationLogoSchema], default: [] },
-  mini_bio: { type: String, required: true },
+  mini_bio: { type: String },
   evaluation_mini_bio: { type: [evaluationMiniBioSchema], default: [] },
   description: { type: String },
   description_evaluation: { type: [evaluationDescriptionSchema], default: [] },
