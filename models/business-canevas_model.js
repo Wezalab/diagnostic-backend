@@ -14,6 +14,7 @@ const businessSchema = new mongoose.Schema({
   activites_cles: { type: [String] },
   partenariat_cles: { type: [String] },
   cout_structure: { type: [String] },
+  autre_documents: { type: [String] },
   owner: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
