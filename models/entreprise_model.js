@@ -228,6 +228,19 @@ const evaluationCustomerBaseSchema = mongoose.Schema({
   coach: { type: mongoose.Schema.Types.ObjectId, ref: "User" }, // Coach
 });
 
+const evaluationCategoryBaseSchema = mongoose.Schema({
+  recommendation_coach: { type: String },
+  completed_by_user: { type: String },
+  score_by_coach: { type: Number },
+  status_by_coach: {
+    type: String,
+    enum: ["Necessite Changement", "Refusé", "Approuvé"],
+  },
+  date_changement: { type: Date, default: Date.now() },
+  coach: { type: mongoose.Schema.Types.ObjectId, ref: "User" }, // Coach
+});
+
+
 const evaluationSocialMediaSchema = mongoose.Schema({
   recommendation_coach: { type: String },
   completed_by_user: { type: String },
@@ -322,6 +335,14 @@ const entrepriseSchema = mongoose.Schema({
   },
   customer_base_evaluation: {
     type: [evaluationCustomerBaseSchema],
+    default: [],
+  },
+  category_base: {
+    type: [String],
+    enum: ["PME", "JEUNE", "FEMME", "PSDE"],
+  },
+  category_base_evaluation: {
+    type: [evaluationCategoryBaseSchema],
     default: [],
   },
   last_score: { type: Number },
