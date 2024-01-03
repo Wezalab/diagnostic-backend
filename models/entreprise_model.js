@@ -328,6 +328,7 @@ const entrepriseSchema = mongoose.Schema({
   last_status: { type: String },
   last_Value: { type: String },
   website: { type: String },
+  email: { type: String },
   social_Media: { type: [String] },
   social_Media_evaluation: { type: [evaluationSocialMediaSchema], default: [] },
   team: { type: [team] },

@@ -72,6 +72,18 @@ const evaluationMissionSchema = mongoose.Schema({
   coach: { type: mongoose.Schema.Types.ObjectId, ref: "User" }, // Coach
 });
 
+const evaluationVisionSchema = mongoose.Schema({
+  recommendation_coach: { type: String },
+  completed_by_user: { type: String },
+  score_by_coach: { type: Number },
+  status_by_coach: {
+    type: String,
+    enum: ["Necessite Changement", "Refusé", "Approuvé"],
+  },
+  date_changement: { type: Date, default: Date.now() },
+  coach: { type: mongoose.Schema.Types.ObjectId, ref: "User" }, // Coach
+});
+
 const evaluationValeurSchema = mongoose.Schema({
   recommendation_coach: { type: String },
   completed_by_user: { type: String },
@@ -240,9 +252,52 @@ const evaluationPitchDeckUrlSchema = mongoose.Schema({
   coach: { type: mongoose.Schema.Types.ObjectId, ref: "User" }, // Coach
 });
 
+const evaluationPitchDeckVideoSchema= mongoose.Schema({
+  recommendation_coach: { type: String },
+  completed_by_user: { type: String },
+  score_by_coach: { type: Number },
+  status_by_coach: {
+    type: String,
+    enum: ["Necessite Changement", "Refusé", "Approuvé"],
+  },
+  date_changement: { type: Date, default: Date.now() },
+  coach: { type: mongoose.Schema.Types.ObjectId, ref: "User" }, // Coach
+});
+
+
+const evaluationSocialMediaSchema = mongoose.Schema({
+  recommendation_coach: { type: String },
+  completed_by_user: { type: String },
+  score_by_coach: { type: Number },
+  status_by_coach: {
+    type: String,
+    enum: ["Necessite Changement", "Refusé", "Approuvé"],
+  },
+  date_changement: { type: Date, default: Date.now() },
+  coach: { type: mongoose.Schema.Types.ObjectId, ref: "User" }, // Coach
+});
+
+const evaluationTeamSchema = mongoose.Schema({
+  recommendation_coach: { type: String },
+  completed_by_user: { type: String },
+  score_by_coach: { type: Number },
+  status_by_coach: {
+    type: String,
+    enum: ["Necessite Changement", "Refusé", "Approuvé"],
+  },
+  date_changement: { type: Date, default: Date.now() },
+  coach: { type: mongoose.Schema.Types.ObjectId, ref: "User" }, // Coach
+});
+
+const team = mongoose.Schema({
+  name: { type: String },
+  email: { type: String },
+  phone: { type: String },
+});
+
 const projectSchema = mongoose.Schema({
-  company_name: { type: String, required: true, trim: true },
-  company_name_evaluation: { type: [evaluationCompanyNameSchema], default: [] },
+  business_plan_name: { type: String, required: true, trim: true },
+  business_plan_name_evaluation: { type: [evaluationCompanyNameSchema], default: [] },
   logo: { type: String },
   logo_evaluation: { type: [evaluationLogoSchema], default: [] },
   mini_bio: { type: String },
@@ -256,6 +311,8 @@ const projectSchema = mongoose.Schema({
   },
   mission: { type: String },
   mission_evaluation: { type: [evaluationMissionSchema], default: [] },
+  vision: { type: String },
+  vision_evaluation: { type: [evaluationVisionSchema], default: [] },
   valeur: { type: String },
   valeur_evaluation: { type: [evaluationValeurSchema], default: [] },
   objectifs: { type: String },
@@ -311,11 +368,22 @@ const projectSchema = mongoose.Schema({
     type: [evaluationPitchDeckUrlSchema],
     default: [],
   },
+  pitch_deck_video: { type: String },
+  pitch_deck_video_evaluation: {
+    type: [evaluationPitchDeckVideoSchema],
+    default: [],
+  },
   last_score: { type: Number },
   last_status: { type: String },
   last_Value: { type: String },
   website: { type: String },
+  email: { type: String },
+  social_Media: { type: [String] },
+  social_Media_evaluation: { type: [evaluationSocialMediaSchema], default: [] },
+  team: { type: [team] },
+  team_evaluation: { type: [evaluationTeamSchema], default: [] },
   owner: { type: mongoose.Schema.Types.ObjectId, ref: "User" }, // Owner
+  entreprise: { type: mongoose.Schema.Types.ObjectId, ref: "Entreprises" }, // Entreprises
 });
 
 const Project = mongoose.model("Projects", projectSchema);
