@@ -132,6 +132,110 @@ exports.findAll = async (req, res) => {
   }
 };
 
-exports.resetPassword = async (req, res) => {};
+exports.resetPassword = async (req, res) => {
+  try {
+    const { email } = req.body;
+
+    // Find the user by email
+    const user = await User.findOne({ email });
+
+    if (!user) {
+      return res
+        .status(404)
+        .json({ message: "Cet email n'existe pas dans le système" });
+    }
+
+    // Generate a unique token for password reset
+    const resetToken = crypto.randomBytes(20).toString("hex");
+    user.resetPasswordToken = resetToken;
+    user.resetPasswordExpires = Date.now() + 3600000; // Token expires in 1 hour
+
+    // Save the user with the reset token and expiration
+    await user.save();
+
+    // Send an email with the reset link
+    const resetLink = `${process.env.BASE_URL}/auth/reset-password/${user._id}/${resetToken}`;
+
+    const transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: "bvenceslas@gmail.com",
+        pass: process.env.APP_PASSWORD,
+      },
+    });
+
+    const mailOptions = {
+      from: "no-reply@business360.cd",
+      to: user.email,
+      subject: "Réinitialisez votre mot de passe",
+      html: `
+        <p>Bienvenu(e) ${user.name},</p>
+        <p>Vous avez demandé la réinitialisation de votre mot de passe. Cliquez sur le lien suivant pour le réinitialiser:</p>
+        <a href="${resetLink}">${resetLink}</a>
+        <p>Si vous n'avez pas demandé de réinitialisation de mot de passe, vous pouvez ignorer cet e-mail.</p>
+        <p>Cordialement,<br>business360</p>
+        <img src="https://transforme.cd/storage/settings/September2023/w9j8CYEpPXjQ6r9PiRPS.png" alt="transforme image" width="300" height="150">
+      `,
+    };
+
+    transporter.sendMail(mailOptions, function (error, info) {
+      if (error) {
+        console.error(error);
+        return res.status(500).json({ message: "Echec de l'envoi du e-mail" });
+      } else {
+        console.log("E-mail de réinitialisation envoyé: " + info.response);
+        return res
+          .status(200)
+          .json({ message: "E-mail de réinitialisation envoyé avec succès" });
+      }
+    });
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+};
+
+exports.handleResetPassword = async (req, res) => {
+  try {
+    const { userId, resetToken } = req.params;
+    const { newPassword, confirmPassword } = req.body;
+
+    // Find the user by ID and check if the reset token is valid
+    const user = await User.findById(userId);
+
+    if (
+      !user ||
+      user.resetPasswordToken !== resetToken ||
+      user.resetPasswordExpires < Date.now()
+    ) {
+      return res
+        .status(400)
+        .json({ message: "Lien de réinitialisation invalid ou expiré" });
+    }
+
+    // Check if the new password and confirm password match
+    if (newPassword !== confirmPassword) {
+      return res
+        .status(400)
+        .json({ message: "Les mots de passes ne correspondent pas" });
+    }
+
+    // Hash the new password
+    const hashedPassword = await bcrypt.hash(newPassword, 16);
+
+    // Update the user's password and reset token
+    user.password = hashedPassword;
+    user.resetPasswordToken = undefined;
+    user.resetPasswordExpires = undefined;
+
+    // Save the updated user
+    await user.save();
+
+    return res
+      .status(200)
+      .json({ message: "Mot de passe réinitialisé avec succès" });
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+};
 
 exports.profile = async (req, res) => {};
