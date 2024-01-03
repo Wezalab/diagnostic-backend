@@ -19,6 +19,7 @@ app.use("/test", (req, res) =>
 );
 app.use("/auth", require("./routes/auth-routes"));
 app.use("/api/projects", require("./routes/project-routes"));
+app.use("/api/entreprises", require("./routes/entreprise-routes"));
 app.use("/api/business-canevas", require("./routes/business-canevas-routes"));
 
 app.listen(PORT, () => {

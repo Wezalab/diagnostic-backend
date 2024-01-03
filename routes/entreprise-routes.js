@@ -7,7 +7,7 @@ const {
   remove,
   recommend,
   completeRecommend,
-} = require("../controllers/project_controller");
+} = require("../controllers/entreprise_controller");
 
 router.get("/", findAll);
 router.get("/:id", getOne);
