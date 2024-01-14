@@ -70,10 +70,16 @@ exports.signup = async (req, res) => {
       cover_picture,
     });
 
-    await newUser.save();
+     // Save the user and get the saved user object
+     const savedUser = await newUser.save();
+
+    // Extract the _id from the saved user object
+    const savedUserId = savedUser._id;
+
     return res
       .status(200)
-      .json({ message: "Utilisateur créé avec succès", email, password });
+      .json({ message: "Utilisateur créé avec succès", email, password, userId: savedUserId, // Include the saved user ID in the response
+    });
   } catch (error) {
     return res.status(400).json({ message: error.message });
   }
