@@ -315,6 +315,8 @@ const projectSchema = mongoose.Schema({
   project_mission: { type: String },
   project_mission_evaluation: { type: [evaluationMissionSchema], default: [] },
   valeur: { type: String },
+  project_vision: { type: String },
+  project_vision_evaluation: { type: [evaluationVisionSchema], default: [] },
   valeur_evaluation: { type: [evaluationValeurSchema], default: [] },
   objectifs: { type: String },
   objectifs_evaluation: { type: [evaluationObjectifsSchema], default: [] },
