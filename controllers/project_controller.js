@@ -38,6 +38,29 @@ exports.create = async (req, res) => {
   }
 };
 
+exports.updatelogo = async (req, res) => {
+  try {
+    // vérifier si le projet existe
+    const foundProject = await Project.findOne({ _id: req.params.id });
+    if (!foundProject) {
+      return res.status(404).json({ message: "Projet non trouvé" });
+    }
+
+    // Update only the logo field
+    foundProject.logo = req.body.logo;
+
+    const updatedProject = await foundProject.save();
+
+    return res.status(200).json({
+      message: "Logo du projet mis à jour avec succès",
+      updatedData: updatedProject,
+    });
+  } catch (error) {
+    return res.status(400).json({ message: error.message });
+  }
+};
+
+
 exports.update = async (req, res) => {
   try {
     // vérifier si le projet existe
