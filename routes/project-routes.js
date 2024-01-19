@@ -21,6 +21,6 @@ router.post("/:id", recommend);
 router.post("/:id", completeRecommend);
 
 router.put("/:id", updatelogo);
-router.put("/:id", updatecover);
+router.put("/cover/:id", updatecover);
 
 module.exports = router;
