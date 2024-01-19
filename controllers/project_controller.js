@@ -68,8 +68,8 @@ exports.updatecover = async (req, res) => {
       return res.status(404).json({ message: "Projet non trouvé" });
     }
 
-    // Update only the logo field
-    foundProject.logo = req.body.cover;
+    // Update only the cover field
+    foundProject.cover = req.body.cover;
 
     const updatedProject = await foundProject.save();
 
