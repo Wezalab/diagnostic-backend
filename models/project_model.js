@@ -299,6 +299,7 @@ const projectSchema = mongoose.Schema({
   business_plan_name: { type: String, required: true, trim: true },
   business_plan_name_evaluation: { type: [evaluationCompanyNameSchema], default: [] },
   logo: { type: String },
+  cover: { type: String },
   logo_evaluation: { type: [evaluationLogoSchema], default: [] },
   mini_bio: { type: String },
   evaluation_mini_bio: { type: [evaluationMiniBioSchema], default: [] },
