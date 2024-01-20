@@ -249,6 +249,7 @@ exports.handleResetPassword = async (req, res) => {
 exports.centralAchatAuth = async (req, res) => {
   try {
     const { url, apiKeys } = req.params;
+    res.status(500).json({ message: url });
 
     console.log(url);
 
