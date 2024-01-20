@@ -247,12 +247,12 @@ exports.handleResetPassword = async (req, res) => {
 };
 
 exports.centralAchatAuth = async (req, res) => {
-  const { url, apiKeys } = req.params;
+  const { url,  key_id,
+    user_id,
+    consumer_key,
+    consumer_secret,
+    key_permissions } = req.params;
   try {
-    // const { url, apiKeys } = req.params;
-
-    console.log(url);
-    const myAPIkeys = JSON.parse(apiKeys)
 
     fetch(url, {
       method: 'POST',
@@ -260,11 +260,11 @@ exports.centralAchatAuth = async (req, res) => {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        "key_id": myAPIkeys.key_id,
-        "user_id": myAPIkeys.user_id,
-        "consumer_key": myAPIkeys.consumer_key,
-        "consumer_secret": myAPIkeys.consumer_secret,
-        "key_permissions": myAPIkeys.key_permissions
+        key_id,
+        user_id,
+        consumer_key,
+        consumer_secret,
+        key_permissions
       }),
     })
       .then(response => response.json())
@@ -282,7 +282,11 @@ exports.centralAchatAuth = async (req, res) => {
 
 
   } catch (error) {
-    return res.status(500).json({ message: error.message,  url, apiKeys });
+    return res.status(500).json({ message: `${error.messageurl} ${url} , ,
+      ${user_id} 
+      ${consumer_key} 
+      ${consumer_secret} 
+      ${key_permissions}`  });
   }
 };
 
