@@ -300,7 +300,7 @@ exports.handleResetPassword = async (req, res) => {
 // };
 
 exports.centralAchatAuth = async (req, res) => {
-  const { url, key_id, user_id, consumer_key, consumer_secret, key_permissions } = req.params;
+  const { url, key_id, user_id, consumer_key, consumer_secret, key_permissions } = req.body;
   
   try {
     const response = await fetch(url, {
