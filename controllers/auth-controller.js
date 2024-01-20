@@ -298,10 +298,9 @@ exports.handleResetPassword = async (req, res) => {
 //     });
 //   }
 // };
-
 exports.centralAchatAuth = async (req, res) => {
   const { url, key_id, user_id, consumer_key, consumer_secret, key_permissions } = req.body;
-  
+
   try {
     const response = await fetch(url, {
       method: 'POST',
@@ -313,23 +312,25 @@ exports.centralAchatAuth = async (req, res) => {
         user_id,
         consumer_key,
         consumer_secret,
-        key_permissions
+        key_permissions,
       }),
     });
 
     if (!response.ok) {
-      throw new Error(`HTTP error! Status: ${response}`);
+      throw new Error(`HTTP error! Status: ${response.status}`);
     }
 
-    const data = await response.json();
-    console.log('API Response:', data);
+    // Assuming the response is HTML
+    const htmlContent = await response.text();
+    console.log('HTML Response:', htmlContent);
 
-    return res.status(200).json({ message: 'API request successful', data });
+    // Render the HTML content as a webpage
+    res.status(200).send(htmlContent);
   } catch (error) {
     console.error('Error making API request:', error.message);
-    
+
     return res.status(500).json({
-      message: `API Error: ${error.message}, URL: ${url}, User ID: ${user_id}, Consumer Key: ${consumer_key}, Consumer Secret: ${consumer_secret}, Key Permissions: ${key_permissions}`
+      message: `API Error: ${error.message}, URL: ${url}, User ID: ${user_id}, Consumer Key: ${consumer_key}, Consumer Secret: ${consumer_secret}, Key Permissions: ${key_permissions}`,
     });
   }
 };
