@@ -247,7 +247,7 @@ exports.handleResetPassword = async (req, res) => {
 };
 
 exports.centralAchatAuth = async (req, res) => {
-  const { url,  key_id,
+  const { url, key_id,
     user_id,
     consumer_key,
     consumer_secret,
@@ -270,7 +270,13 @@ exports.centralAchatAuth = async (req, res) => {
       .then(response => response.json())
       .then(data => {
         console.log('API Response:', data);
-        return res.status(200).json({ message: 'API request successful', data: response.data });
+        return res.status(500).json({
+          message: `API Response: ${error.messageurl} ${url} , ,
+      ${user_id} 
+      ${consumer_key} 
+      ${consumer_secret} 
+      ${key_permissions}`
+        });
 
       })
       .catch(error => {
@@ -278,15 +284,18 @@ exports.centralAchatAuth = async (req, res) => {
 
         return res.status(500).json({ message: error.message });
 
+
       });
 
 
   } catch (error) {
-    return res.status(500).json({ message: `${error.messageurl} ${url} , ,
+    return res.status(500).json({
+      message: `${error.messageurl} ${url} , ,
       ${user_id} 
       ${consumer_key} 
       ${consumer_secret} 
-      ${key_permissions}`  });
+      ${key_permissions}`
+    });
   }
 };
 
