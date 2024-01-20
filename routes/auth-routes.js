@@ -15,6 +15,6 @@ router.post("/reset-password", resetPassword);
 router.post("/reset-password/:userId/:resetToken", handleResetPassword);
 router.get("/profile", profile);
 router.get("/user-list", findAll);
-router.get("/central-achat", centralAchatAuth );
+router.post("/central-achat", centralAchatAuth );
 
 module.exports = router;
