@@ -6,6 +6,7 @@ const {
   profile,
   findAll,
   handleResetPassword,
+  centralAchatAuth,
 } = require("../controllers/auth-controller");
 
 router.post("/signup", signup);
@@ -14,5 +15,6 @@ router.post("/reset-password", resetPassword);
 router.post("/reset-password/:userId/:resetToken", handleResetPassword);
 router.get("/profile", profile);
 router.get("/user-list", findAll);
+router.get("/central-achat", centralAchatAuth );
 
 module.exports = router;

@@ -1,3 +1,5 @@
+import axios from 'axios';
+
 const User = require("../models/user-model");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
@@ -70,16 +72,17 @@ exports.signup = async (req, res) => {
       cover_picture,
     });
 
-     // Save the user and get the saved user object
-     const savedUser = await newUser.save();
+    // Save the user and get the saved user object
+    const savedUser = await newUser.save();
 
     // Extract the _id from the saved user object
     const savedUserId = savedUser._id;
 
     return res
       .status(200)
-      .json({ message: "Utilisateur créé avec succès", email, password, userId: savedUserId, // Include the saved user ID in the response
-    });
+      .json({
+        message: "Utilisateur créé avec succès", email, password, userId: savedUserId, // Include the saved user ID in the response
+      });
   } catch (error) {
     return res.status(400).json({ message: error.message });
   }
@@ -245,4 +248,24 @@ exports.handleResetPassword = async (req, res) => {
   }
 };
 
-exports.profile = async (req, res) => {};
+exports.centralAchatAuth = async (req, res) => {
+  try {
+    const { storeUrl, endpoint, queryString, apiKeys  } = req.params;
+
+    const url = `${storeUrl}${endpoint}?${queryString}`;
+
+    console.log(url);
+
+    // Using Axios to send the API keys
+    const response = await axios.post(url, apiKeys);
+
+    console.log('API Response:', response.data);
+
+    return res.status(200).json({ message: 'API request successful', data: response.data });
+
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+};
+
+exports.profile = async (req, res) => { };
