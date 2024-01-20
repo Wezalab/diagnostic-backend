@@ -248,12 +248,9 @@ exports.handleResetPassword = async (req, res) => {
 
 exports.centralAchatAuth = async (req, res) => {
   try {
-    const { storeUrl, endpoint, queryString, apiKeys } = req.params;
-
-    const url = `${storeUrl}${endpoint}?${queryString}`;
+    const { url, apiKeys } = req.params;
 
     console.log(url);
-
 
     fetch(url, {
       method: 'POST',
