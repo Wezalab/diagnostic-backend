@@ -1,5 +1,3 @@
-import axios from 'axios';
-
 const User = require("../models/user-model");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
@@ -250,18 +248,33 @@ exports.handleResetPassword = async (req, res) => {
 
 exports.centralAchatAuth = async (req, res) => {
   try {
-    const { storeUrl, endpoint, queryString, apiKeys  } = req.params;
+    const { storeUrl, endpoint, queryString, apiKeys } = req.params;
 
     const url = `${storeUrl}${endpoint}?${queryString}`;
 
     console.log(url);
 
-    // Using Axios to send the API keys
-    const response = await axios.post(url, apiKeys);
 
-    console.log('API Response:', response.data);
+    fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(apiKeys),
+    })
+      .then(response => response.json())
+      .then(data => {
+        console.log('API Response:', data);
+        return res.status(200).json({ message: 'API request successful', data: response.data });
 
-    return res.status(200).json({ message: 'API request successful', data: response.data });
+      })
+      .catch(error => {
+        console.error('Error making API request:', error.message);
+
+        return res.status(500).json({ message: error.message });
+
+      });
+
 
   } catch (error) {
     return res.status(500).json({ message: error.message });
