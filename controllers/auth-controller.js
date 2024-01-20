@@ -246,15 +246,64 @@ exports.handleResetPassword = async (req, res) => {
   }
 };
 
-exports.centralAchatAuth = async (req, res) => {
-  const { url, key_id,
-    user_id,
-    consumer_key,
-    consumer_secret,
-    key_permissions } = req.params;
-  try {
+// exports.centralAchatAuth = async (req, res) => {
+//   const { url, key_id,
+//     user_id,
+//     consumer_key,
+//     consumer_secret,
+//     key_permissions } = req.params;
+//   try {
 
-    fetch(url, {
+//     fetch(url, {
+//       method: 'POST',
+//       headers: {
+//         'Content-Type': 'application/json',
+//       },
+//       body: JSON.stringify({
+//         key_id,
+//         user_id,
+//         consumer_key,
+//         consumer_secret,
+//         key_permissions
+//       }),
+//     })
+//       .then(response => response.json())
+//       .then(data => {
+//         console.log('API Response:', data);
+//         return res.status(500).json({
+//           message: `API Response: ${error.messageurl} ${url} , ,
+//       ${user_id} 
+//       ${consumer_key} 
+//       ${consumer_secret} 
+//       ${key_permissions}`
+//         });
+
+//       })
+//       .catch(error => {
+//         console.error('Error making API request:', error.message);
+
+//         return res.status(500).json({ message: error.message });
+
+
+//       });
+
+
+//   } catch (error) {
+//     return res.status(500).json({
+//       message: `${error.messageurl} ${url} , ,
+//       ${user_id} 
+//       ${consumer_key} 
+//       ${consumer_secret} 
+//       ${key_permissions}`
+//     });
+//   }
+// };
+
+exports.centralAchatAuth = async (req, res) => {
+  const { url, key_id, user_id, consumer_key, consumer_secret, key_permissions } = req.params;
+  
+  try {
+    const response = await fetch(url, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -266,37 +315,24 @@ exports.centralAchatAuth = async (req, res) => {
         consumer_secret,
         key_permissions
       }),
-    })
-      .then(response => response.json())
-      .then(data => {
-        console.log('API Response:', data);
-        return res.status(500).json({
-          message: `API Response: ${error.messageurl} ${url} , ,
-      ${user_id} 
-      ${consumer_key} 
-      ${consumer_secret} 
-      ${key_permissions}`
-        });
+    });
 
-      })
-      .catch(error => {
-        console.error('Error making API request:', error.message);
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response}`);
+    }
 
-        return res.status(500).json({ message: error.message });
+    const data = await response.json();
+    console.log('API Response:', data);
 
-
-      });
-
-
+    return res.status(200).json({ message: 'API request successful', data });
   } catch (error) {
+    console.error('Error making API request:', error.message);
+    
     return res.status(500).json({
-      message: `${error.messageurl} ${url} , ,
-      ${user_id} 
-      ${consumer_key} 
-      ${consumer_secret} 
-      ${key_permissions}`
+      message: `API Error: ${error.message}, URL: ${url}, User ID: ${user_id}, Consumer Key: ${consumer_key}, Consumer Secret: ${consumer_secret}, Key Permissions: ${key_permissions}`
     });
   }
 };
+
 
 exports.profile = async (req, res) => { };
