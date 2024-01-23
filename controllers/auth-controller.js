@@ -19,6 +19,7 @@ exports.signup = async (req, res) => {
       date_de_naissance,
       province,
       ville,
+      role,
       profile_picture,
       cover_picture,
     } = req.body;
@@ -66,6 +67,7 @@ exports.signup = async (req, res) => {
       date_de_naissance,
       province,
       ville,
+      role,
       profile_picture: profile_picture || randomProfilePicture,
       cover_picture,
     });
