@@ -16,7 +16,7 @@ const userSchema = mongoose.Schema({
   date_de_naissance: { type: Date },
   province: { type: String },
   ville: { type: String },
-  role: { type: String, default: "USER" },
+  role: { type: String },
   profile_picture: { type: String },
   cover_picture: { type: String },
   resetPasswordToken: { type: String },
