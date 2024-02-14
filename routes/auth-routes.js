@@ -8,6 +8,7 @@ const {
   handleResetPassword,
   centralAchatAuth,
   resetPasswordByCode,
+  handleResetPasswordNoToken,
 } = require("../controllers/auth-controller");
 
 router.post("/signup", signup);
