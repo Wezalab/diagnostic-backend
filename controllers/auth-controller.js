@@ -217,11 +217,6 @@ exports.resetPasswordByCode = async (req, res) => {
         .json({ message: "Cet email n'existe pas dans le système" });
     }
 
-    // Generate a unique token for password reset
-    const resetToken = crypto.randomBytes(20).toString("hex");
-    user.resetPasswordToken = resetToken;
-    user.resetPasswordExpires = Date.now() + 3600000; // Token expires in 1 hour
-
     // Save the user with the reset token and expiration
     await user.save();
 
@@ -262,6 +257,40 @@ exports.resetPasswordByCode = async (req, res) => {
           .json({ message: "E-mail de réinitialisation envoyé avec succès" });
       }
     });
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+};
+
+exports.handleResetPasswordNoToken = async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const { newPassword, confirmPassword } = req.body;
+
+    // Find the user by ID and check if the reset token is valid
+    const user = await User.findById(userId);
+
+    // Check if the new password and confirm password match
+    if (newPassword !== confirmPassword) {
+      return res
+        .status(400)
+        .json({ message: "Les mots de passes ne correspondent pas" });
+    }
+
+    // Hash the new password
+    const hashedPassword = await bcrypt.hash(newPassword, 16);
+
+    // Update the user's password and reset token
+    user.password = hashedPassword;
+    user.resetPasswordToken = undefined;
+    user.resetPasswordExpires = undefined;
+
+    // Save the updated user
+    await user.save();
+
+    return res
+      .status(200)
+      .json({ message: "Mot de passe réinitialisé avec succès" });
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }
@@ -311,58 +340,6 @@ exports.handleResetPassword = async (req, res) => {
   }
 };
 
-// exports.centralAchatAuth = async (req, res) => {
-//   const { url, key_id,
-//     user_id,
-//     consumer_key,
-//     consumer_secret,
-//     key_permissions } = req.params;
-//   try {
-
-//     fetch(url, {
-//       method: 'POST',
-//       headers: {
-//         'Content-Type': 'application/json',
-//       },
-//       body: JSON.stringify({
-//         key_id,
-//         user_id,
-//         consumer_key,
-//         consumer_secret,
-//         key_permissions
-//       }),
-//     })
-//       .then(response => response.json())
-//       .then(data => {
-//         console.log('API Response:', data);
-//         return res.status(500).json({
-//           message: `API Response: ${error.messageurl} ${url} , ,
-//       ${user_id} 
-//       ${consumer_key} 
-//       ${consumer_secret} 
-//       ${key_permissions}`
-//         });
-
-//       })
-//       .catch(error => {
-//         console.error('Error making API request:', error.message);
-
-//         return res.status(500).json({ message: error.message });
-
-
-//       });
-
-
-//   } catch (error) {
-//     return res.status(500).json({
-//       message: `${error.messageurl} ${url} , ,
-//       ${user_id} 
-//       ${consumer_key} 
-//       ${consumer_secret} 
-//       ${key_permissions}`
-//     });
-//   }
-// };
 exports.centralAchatAuth = async (req, res) => {
   const { url, key_id, user_id, consumer_key, consumer_secret, key_permissions } = req.body;
 
