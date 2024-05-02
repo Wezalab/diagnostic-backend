@@ -29,16 +29,15 @@ app.use("/api/action", require("./routes/action-routes"));
 app.use("/api/social", require("./routes/social-routes"));
 app.use("/api/attachement", require("./routes/attachement-routes"));
 
-app.listen(PORT, () => {
+app.listen(PORT, async () => {
   console.log(`Listening on port ${PORT}`);
   console.log(`Listening on port ${process.env.url}`);
   // connect to the db
 
-  mongoose
+  await mongoose
     .connect(process.env.url)
     .then(() => console.log("Connected to DB ..."))
     .catch((err) =>
       console.error("Error connecting to the DB xxx ", err.message)
     );
-    mongoose.set('bufferCommands', false);
 });
