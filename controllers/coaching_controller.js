@@ -2,8 +2,7 @@ const Coaching = require("../models/coaching_model");
 
 exports.findAll = async (req, res) => {
   try {
-    const projects = await Coaching.find().exec();
-
+    const projects = await Coaching.find();
     return res.status(200).json(projects);
   } catch (error) {
     return res.status(400).json({ message: error.message });
@@ -12,11 +11,10 @@ exports.findAll = async (req, res) => {
 
 exports.getOne = async (req, res) => {
   try {
-    const project = await Coaching.findOne({ _id: req.params.id });
+    const project = await Coaching.findById(req.params.id);
     if (!project) {
-      return res.status(404).json({ message: "Coaching non trouvé" });
+      return res.status(404).json({ message: "Coaching not found" });
     }
-
     return res.status(200).json(project);
   } catch (error) {
     return res.status(400).json({ message: error.message });
@@ -25,7 +23,6 @@ exports.getOne = async (req, res) => {
 
 exports.create = async (req, res) => {
   try {
-    // code ici
     const newCoaching = new Coaching(req.body);
     const savedCoaching = await newCoaching.save();
     return res.status(201).json(savedCoaching);
@@ -34,23 +31,19 @@ exports.create = async (req, res) => {
   }
 };
 
-
 exports.update = async (req, res) => {
   try {
-    // vérifier si le projet existe
-    const foundCoaching = await Coaching.findOne({ _id: req.params.id });
+    const foundCoaching = await Coaching.findById(req.params.id);
     if (!foundCoaching) {
-      return res.status(404).json({ message: "Coaching non trouvé" });
+      return res.status(404).json({ message: "Coaching not found" });
     }
-
-    const updatedProject = await Coaching.updateOne(
-      { _id: foundCoaching._id },
-      { ...req.body },
+    const updatedProject = await Coaching.findByIdAndUpdate(
+      req.params.id,
+      req.body,
       { new: true }
     );
-
     return res.status(200).json({
-      message: "Coaching mis à jour avec succès",
+      message: "Coaching updated successfully",
       updatedData: updatedProject,
     });
   } catch (error) {
@@ -60,19 +53,18 @@ exports.update = async (req, res) => {
 
 exports.remove = async (req, res) => {
   try {
-    // code ici
-    const foundCoaching = await Coaching.findOne({ _id: req.params.id });
+    const foundCoaching = await Coaching.findById(req.params.id);
     if (!foundCoaching) {
-      return res.status(404).json({ error: "Coaching non trouvé !" });
+      return res.status(404).json({ error: "Coaching not found" });
     }
-    const deletedProject = await Coaching.deleteOne({ _id: foundCoaching._id });
+    const deletedProject = await Coaching.findByIdAndDelete(req.params.id);
     return res.json({
-      message: "Coaching supprimé avec succès",
+      message: "Coaching deleted successfully",
       deletedData: deletedProject,
     });
   } catch (error) {
     return res
       .status(500)
-      .json({ error: "Coaching non supprimé !", details: error.message });
+      .json({ error: "Coaching not deleted", details: error.message });
   }
 };
