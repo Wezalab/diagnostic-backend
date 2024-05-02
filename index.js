@@ -34,10 +34,19 @@ app.listen(PORT, async () => {
   console.log(`Listening on port ${process.env.url}`);
   // connect to the db
 
-  await mongoose
-    .connect(process.env.url)
-    .then(() => console.log("Connected to DB ..."))
-    .catch((err) =>
-      console.error("Error connecting to the DB xxx ", err.message)
-    );
+  // await mongoose
+  //   .connect(process.env.url)
+  //   .then(() => console.log("Connected to DB ..."))
+  //   .catch((err) =>
+  //     console.error("Error connecting to the DB xxx ", err.message)
+  //   );
+
+  setTimeout(function () {
+    mongoose
+      .connect(process.env.url)
+      .then(() => console.log("Connected to DB ..."))
+      .catch((err) =>
+        console.error("Error connecting to the DB xxx ", err.message)
+      );
+  }, 60000);
 });
