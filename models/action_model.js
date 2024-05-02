@@ -4,7 +4,7 @@ const actionSchema = new mongoose.Schema({
   coachMood: {type: String},
   status: {
     type: String,
-    enum: ["ACCEPETED", "REJECTED"],
+    enum: ["ACCEPETED", "REJECTED", "PENDING"],
     default: "PENDING",
   },
   goalId: {

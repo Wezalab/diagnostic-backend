@@ -31,9 +31,11 @@ app.use("/api/attachement", require("./routes/attachement-routes"));
 
 app.listen(PORT, () => {
   console.log(`Listening on port ${PORT}`);
+  console.log(`Listening on port ${process.env.url}`);
   // connect to the db
+
   mongoose
-    .connect(process.env.MONGO_URI)
+    .connect(process.env.url)
     .then(() => console.log("Connected to DB ..."))
     .catch((err) =>
       console.error("Error connecting to the DB xxx ", err.message)

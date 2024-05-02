@@ -4,7 +4,7 @@ const coachingSchema = new mongoose.Schema({
   autre: {type: String},
   status: {
     type: String,
-    enum: ["ACCEPETED", "REJECTED"],
+    enum: ["ACCEPETED", "REJECTED","PENDING"],
     default: "PENDING",
   },
   coach: {
