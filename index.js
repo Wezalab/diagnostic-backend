@@ -41,12 +41,33 @@ app.listen(PORT, async () => {
   //     console.error("Error connecting to the DB xxx ", err.message)
   //   );
 
-  setTimeout(function () {
-    mongoose
-      .connect(process.env.url)
-      .then(() => console.log("Connected to DB ..."))
-      .catch((err) =>
-        console.error("Error connecting to the DB xxx ", err.message)
-      );
-  }, 60000);
+  // setTimeout(function () {
+  //   mongoose
+  //     .connect(process.env.url)
+  //     .then(() => console.log("Connected to DB ..."))
+  //     .catch((err) =>
+  //       console.error("Error connecting to the DB xxx ", err.message)
+  //     );
+  // }, 60000);
+
+  
+		let timeout = 25;
+		while (mongoose.connection.readyState === 0) {
+			if (timeout === 0) {
+				console.log('timeout');
+				throw new Error(
+					'timeout occured with mongoose connection',
+				);
+			}
+			await mongoose.connect(process.env.url, {
+				useNewUrlParser: true,
+				useUnifiedTopology: true,
+			});
+			timeout--;
+		}
+		console.log(
+			'Database connection status:',
+			mongoose.connection.readyState,
+		);
+	
 });
