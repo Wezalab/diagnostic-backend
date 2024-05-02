@@ -2,6 +2,11 @@ const mongoose = require("mongoose");
 
 const coachingSchema = new mongoose.Schema({
   autre: {type: String},
+  status: {
+    type: String,
+    enum: ["ACCEPETED", "REJECTED"],
+    default: "PENDING",
+  },
   coach: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
