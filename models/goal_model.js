@@ -7,16 +7,16 @@ const chat = mongoose.Schema({
   attachements : {type: [String]},
 });
 
-const coachingSchema = new mongoose.Schema({
+const goalSchema = new mongoose.Schema({
   coachMood: {type: String},
   status: {
     type: String,
     enum: ["ACCEPETED", "REJECTED"],
     default: "PENDING",
   },
-  coachingId: {
+  sessionId: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "Coaching",
+    ref: "Session",
   },
   cover: {type: String},
   label: {type: [String]},
@@ -30,8 +30,8 @@ const coachingSchema = new mongoose.Schema({
   description: {type: String},
   attachements : {type: [String]},
   chat: { type: [chat] },
-
+  percentage: {type: Number},
 });
 
-const Coaching = mongoose.model("Coaching", coachingSchema);
-module.exports = Coaching;
+const Goal = mongoose.model("Goal", goalSchema);
+module.exports = Goal;
