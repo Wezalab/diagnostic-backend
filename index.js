@@ -22,6 +22,13 @@ app.use("/api/projects", require("./routes/project-routes"));
 app.use("/api/entreprises", require("./routes/entreprise-routes"));
 app.use("/api/business-canevas", require("./routes/business-canevas-routes"));
 
+app.use("/api/coaching", require("./routes/coaching-routes"));
+app.use("/api/session", require("./routes/session-routes"));
+app.use("/api/goal", require("./routes/goal-routes"));
+app.use("/api/action", require("./routes/action-routes"));
+app.use("/api/social", require("./routes/social-routes"));
+app.use("/api/attachement", require("./routes/attachement-routes"));
+
 app.listen(PORT, () => {
   console.log(`Listening on port ${PORT}`);
   // connect to the db
