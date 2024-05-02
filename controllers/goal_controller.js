@@ -2,11 +2,12 @@ const Goal = require("../models/goal_model");
 
 exports.findAll = async (req, res) => {
   try {
-    const projects = await Goal.find().populate({
-      path: "owner",
-      select:
-        "coachMood, status, sessionId, cover, label, date_limite, priority, description, attachements, chat, percentage",
-    });;
+    const projects = await Goal.find();
+    // .populate({
+    //   path: "owner",
+    //   select:
+    //     "coachMood, status, sessionId, cover, label, date_limite, priority, description, attachements, chat, percentage",
+    // });;
 
     return res.status(200).json(projects);
   } catch (error) {

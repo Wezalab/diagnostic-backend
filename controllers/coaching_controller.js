@@ -2,11 +2,12 @@ const Coaching = require("../models/coaching_model");
 
 exports.findAll = async (req, res) => {
   try {
-    const projects = await Coaching.find().populate({
-      path: "owner",
-      select:
-        "autre, status, coach, coache",
-    });
+    const projects = await Coaching.find();
+    // .populate({
+    //   path: "owner",
+    //   select:
+    //     "autre, status, coach, coache",
+    // });
     return res.status(200).json(projects);
   } catch (error) {
     return res.status(400).json({ message: error.message });

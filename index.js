@@ -40,4 +40,5 @@ app.listen(PORT, () => {
     .catch((err) =>
       console.error("Error connecting to the DB xxx ", err.message)
     );
+    mongoose.set('bufferCommands', false);
 });

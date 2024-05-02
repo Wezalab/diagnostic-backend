@@ -2,11 +2,12 @@ const Action = require("../models/action_model");
 
 exports.findAll = async (req, res) => {
   try {
-    const projects = await Action.find().populate({
-      path: "owner",
-      select:
-        "coachMood, status, goalId, date_limite, description, attachements",
-    });
+    const projects = await Action.find();
+    // .populate({
+    //   path: "owner",
+    //   select:
+    //     "coachMood, status, goalId, date_limite, description, attachements",
+    // });
 
 
     return res.status(200).json(projects);

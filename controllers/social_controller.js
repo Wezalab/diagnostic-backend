@@ -2,11 +2,12 @@ const Social = require("../models/social_media_model");
 
 exports.findAll = async (req, res) => {
   try {
-    const projects = await Social.find().populate({
-      path: "owner",
-      select:
-        "owner, socialMedia, url",
-    });
+    const projects = await Social.find();
+    // .populate({
+    //   path: "owner",
+    //   select:
+    //     "owner, socialMedia, url",
+    // });
 
     return res.status(200).json(projects);
   } catch (error) {

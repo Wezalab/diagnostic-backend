@@ -2,11 +2,12 @@ const Attachement = require("../models/attachement_model");
 
 exports.findAll = async (req, res) => {
   try {
-    const projects = await Attachement.find().populate({
-      path: "owner",
-      select:
-        "owner, comment, url",
-    });
+    const projects = await Attachement.find();
+    // .populate({
+    //   path: "owner",
+    //   select:
+    //     "owner, comment, url",
+    // });
 
     return res.status(200).json(projects);
   } catch (error) {
