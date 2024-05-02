@@ -2,7 +2,11 @@ const Session = require("../models/session_model");
 
 exports.findAll = async (req, res) => {
   try {
-    const projects = await Session.find().exec();
+    const projects = await Session.find().populate({
+      path: "owner",
+      select:
+        "idCoach, status, idCoachee",
+    });
 
     return res.status(200).json(projects);
   } catch (error) {

@@ -5,7 +5,7 @@ const sessionSchema = new mongoose.Schema({
   idCoachee: { type: [mongoose.Schema.Types.ObjectId], ref: "User" },
   status: {
     type: String,
-    enum: ["ACCEPETED", "REJECTED", "DONE", "CANCEL"],
+    enum: ["ACCEPETED", "REJECTED", "DONE", "CANCEL", "PENDING"],
     default: "PENDING",
   }
 });

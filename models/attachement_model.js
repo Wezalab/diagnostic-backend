@@ -6,5 +6,5 @@ const attachementsSchema = new mongoose.Schema({
   url: {type: String},
 });
 
-const Social = mongoose.model("Social", attachementsSchema);
-module.exports = Social;
+const Attachement = mongoose.model("Attachement", attachementsSchema);
+module.exports = Attachement;
