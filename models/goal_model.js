@@ -8,6 +8,7 @@ const chat = mongoose.Schema({
 });
 
 const goalSchema = new mongoose.Schema({
+  name: {type: String},
   coachMood: {type: String},
   status: {
     type: String,
@@ -31,6 +32,7 @@ const goalSchema = new mongoose.Schema({
   attachements : {type: [String]},
   chat: { type: [chat] },
   percentage: {type: Number},
+  column : {type: Number,  default: 0, },
 });
 
 const Goal = mongoose.model("Goal", goalSchema);
