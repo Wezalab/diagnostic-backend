@@ -48,7 +48,7 @@ exports.update = async (req, res) => {
       return res.status(404).json({ message: "Attachement non trouvé" });
     }
 
-    const updatedProject = await Attachement.updateOne(
+    const updatedProject = await Attachement.findOneAndUpdate(
       { _id: foundCoaching._id },
       { ...req.body },
       { new: true }

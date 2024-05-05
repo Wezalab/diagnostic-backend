@@ -48,7 +48,7 @@ exports.update = async (req, res) => {
       return res.status(404).json({ message: "Session non trouvé" });
     }
 
-    const updatedProject = await Session.updateOne(
+    const updatedProject = await Session.findOneAndUpdate(
       { _id: foundCoaching._id },
       { ...req.body },
       { new: true }

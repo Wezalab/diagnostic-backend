@@ -48,7 +48,7 @@ exports.update = async (req, res) => {
       return res.status(404).json({ message: "Social non trouvé" });
     }
 
-    const updatedProject = await Social.updateOne(
+    const updatedProject = await Social.findOneAndUpdate(
       { _id: foundCoaching._id },
       { ...req.body },
       { new: true }

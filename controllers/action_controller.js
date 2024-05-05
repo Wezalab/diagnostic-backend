@@ -49,7 +49,7 @@ exports.update = async (req, res) => {
       return res.status(404).json({ message: "Action non trouvé" });
     }
 
-    const updatedProject = await Action.updateOne(
+    const updatedProject = await Action.findOneAndUpdate(
       { _id: foundCoaching._id },
       { ...req.body },
       { new: true }

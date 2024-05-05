@@ -48,7 +48,7 @@ exports.update = async (req, res) => {
       return res.status(404).json({ message: "Objectif non trouvé" });
     }
 
-    const updatedProject = await Goal.updateOne(
+    const updatedProject = await Goal.findOneAndUpdate(
       { _id: foundCoaching._id },
       { ...req.body },
       { new: true }
