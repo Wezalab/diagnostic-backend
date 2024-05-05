@@ -70,7 +70,7 @@ exports.remove = async (req, res) => {
     if (!foundCoaching) {
       return res.status(404).json({ error: "Social non trouvé !" });
     }
-    const deletedProject = await Social.deleteOne({ _id: foundCoaching._id });
+    const deletedProject = await Social.findOneAndDelete({ _id: foundCoaching._id });
     return res.json({
       message: "Social supprimé avec succès",
       deletedData: deletedProject,

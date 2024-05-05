@@ -70,7 +70,7 @@ exports.remove = async (req, res) => {
     if (!foundCoaching) {
       return res.status(404).json({ error: "Objectif non trouvé !" });
     }
-    const deletedProject = await Goal.deleteOne({ _id: foundCoaching._id });
+    const deletedProject = await Goal.findOneAndDelete({ _id: foundCoaching._id });
     return res.json({
       message: "Objectif supprimé avec succès",
       deletedData: deletedProject,

@@ -70,7 +70,7 @@ exports.remove = async (req, res) => {
     if (!foundCoaching) {
       return res.status(404).json({ error: "Session non trouvé !" });
     }
-    const deletedProject = await Session.deleteOne({ _id: foundCoaching._id });
+    const deletedProject = await Session.findOneAndDelete({ _id: foundCoaching._id });
     return res.json({
       message: "Session supprimé avec succès",
       deletedData: deletedProject,

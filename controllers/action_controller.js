@@ -71,7 +71,7 @@ exports.remove = async (req, res) => {
     if (!foundCoaching) {
       return res.status(404).json({ error: "Action non trouvé !" });
     }
-    const deletedProject = await Action.deleteOne({ _id: foundCoaching._id });
+    const deletedProject = await Action.findOneAndDelete({ _id: foundCoaching._id });
     return res.json({
       message: "Action supprimé avec succès",
       deletedData: deletedProject,

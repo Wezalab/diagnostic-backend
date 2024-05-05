@@ -70,7 +70,7 @@ exports.remove = async (req, res) => {
     if (!foundCoaching) {
       return res.status(404).json({ error: "Attachement non trouvé !" });
     }
-    const deletedProject = await Attachement.deleteOne({ _id: foundCoaching._id });
+    const deletedProject = await Attachement.findOneAndDelete({ _id: foundCoaching._id });
     return res.json({
       message: "Attachement supprimé avec succès",
       deletedData: deletedProject,

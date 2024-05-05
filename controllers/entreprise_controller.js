@@ -68,7 +68,7 @@ exports.remove = async (req, res) => {
     if (!foundEntreprise) {
       return res.status(404).json({ error: "Entreprise non trouvée !" });
     }
-    const deletedEntreprise = await Entreprise.deleteOne({ _id: foundEntreprise._id });
+    const deletedEntreprise = await Entreprise.findOneAndDelete({ _id: foundEntreprise._id });
     return res.json({
       message: "Entreprise supprimé avec succès",
       deletedData: deletedEntreprise,

@@ -72,7 +72,7 @@ exports.remove = async (req, res) => {
     if (!foundBusinessCaneva) {
       return res.status(404).json({ error: "Business Canevas non trouvé !" });
     }
-    const deletedBusinessCan = await BusinessCan.deleteOne({
+    const deletedBusinessCan = await BusinessCan.findOneAndDelete({
       _id: foundBusinessCaneva._id,
     });
     return res.json({

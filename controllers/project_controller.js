@@ -113,7 +113,7 @@ exports.remove = async (req, res) => {
     if (!foundProject) {
       return res.status(404).json({ error: "Projet non trouvé !" });
     }
-    const deletedProject = await Project.deleteOne({ _id: foundProject._id });
+    const deletedProject = await Project.findOneAndDelete({ _id: foundProject._id });
     return res.json({
       message: "Projet supprimé avec succès",
       deletedData: deletedProject,
