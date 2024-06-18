@@ -7,7 +7,14 @@ const sessionSchema = new mongoose.Schema({
     type: String,
     enum: ["ACCEPETED", "REJECTED", "DONE", "CANCEL", "PENDING"],
     default: "PENDING",
-  }
+  },
+  title: { type: String},
+  allDay: { type: Boolean,  default: false},
+  color: { type: String, default:"#00A76F"},
+  description: { type: String,  default: ""},
+  start : { type: Date, default: Date.now()},
+  end: { type: Date, default: Date.now()},
+  gmail: { type: String,  default: ""}
 });
 
 const Session = mongoose.model("Session", sessionSchema);
