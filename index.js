@@ -28,6 +28,7 @@ app.use("/api/goal", require("./routes/goal-routes"));
 app.use("/api/action", require("./routes/action-routes"));
 app.use("/api/social", require("./routes/social-routes"));
 app.use("/api/attachement", require("./routes/attachement-routes"));
+app.use("/api/evaluation", require("./routes/evaluation-routes"));
 
 app.listen(PORT, async () => {
   console.log(`Listening on port ${PORT}`);
