@@ -20,6 +20,8 @@ const goalSchema = new mongoose.Schema({
     ref: "Session",
     required: false, // Making sessionId optional
   },
+  idCoach: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: false, },
+  idCoachee: { type: [mongoose.Schema.Types.ObjectId], ref: "User", required: false, },
   cover: { type: String },
   label: { type: [String] },
   date_limite: { type: Date },
