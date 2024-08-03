@@ -16,8 +16,8 @@ const facteurSchema = mongoose.Schema({
   questions: [{
     question: { type: String },
     recommandations: { type: [String] },
+    evaluations: { type: [evaSchema], default: [] },
   }],
-  evaluations: { type: [evaSchema], default: [] },
 });
 
 const evaluationSchema = new mongoose.Schema({
