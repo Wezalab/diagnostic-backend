@@ -74,25 +74,30 @@ exports.update = async (req, res) => {
 
 exports.updateByCoach = async (req, res) => {
   try {
-    // vérifier si le projet existe
-    const foundCoaching = await Goal.findOne({ _id: req.params.id });
+    // Extract parameters from the request
+    const { id, idCoach } = req.params;
+
+    // Verify if the goal exists
+    const foundCoaching = await Goal.findOne({ _id: id });
     if (!foundCoaching) {
       return res.status(404).json({ message: "Objectif non trouvé" });
     }
 
+    // Update the goal
     const updatedProject = await Goal.findOneAndUpdate(
       { _id: foundCoaching._id },
       { ...req.body },
       { new: true }
     );
-    const { idCoach } = req.params;
+
+    // Retrieve all goals for the specified coach
     const allGoals = await Goal.find({ idCoach }).populate('idCoach').populate('idCoachee').exec();
 
-
+    // Send the response
     return res.status(200).json({
       message: "Objectif mis à jour avec succès",
       updatedData: updatedProject,
-      allData : allGoals
+      allData: allGoals,
     });
   } catch (error) {
     return res.status(400).json({ message: error.message });
@@ -103,7 +108,8 @@ exports.updateByCoach = async (req, res) => {
 exports.updateByCoachee = async (req, res) => {
   try {
     // vérifier si le projet existe
-    const foundCoaching = await Goal.findOne({ _id: req.params.id });
+    const { id, idCoachee } = req.params;
+    const foundCoaching = await Goal.findOne({ _id: id });
     if (!foundCoaching) {
       return res.status(404).json({ message: "Objectif non trouvé" });
     }
@@ -113,7 +119,6 @@ exports.updateByCoachee = async (req, res) => {
       { ...req.body },
       { new: true }
     );
-    const { idCoachee } = req.params;
     const allGoals = await Goal.find({ idCoachee: idCoachee }).populate('idCoach').populate('idCoachee').exec();
 
     return res.status(200).json({
