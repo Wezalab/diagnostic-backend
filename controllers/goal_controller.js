@@ -99,9 +99,7 @@ exports.listGoalsByCoach = async (req, res) => {
   const { idCoach } = req.params;
 
   try {
-    const goals = await Goal.find({ idCoach })
-      .populate('idCoach', 'name') // Adjust fields to populate as needed
-      .populate('idCoachee', 'name'); // Adjust fields to populate as needed
+    const goals = await Goal.find({ idCoach }).populate('idCoach').populate('idCoachee').exec();
 
     if (!goals) {
       return res.status(404).json({ message: 'No goals found for this coach' });
