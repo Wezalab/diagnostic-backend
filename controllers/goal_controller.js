@@ -99,6 +99,34 @@ exports.updateByCoach = async (req, res) => {
   }
 };
 
+
+exports.updateByCoachee = async (req, res) => {
+  try {
+    // vérifier si le projet existe
+    const foundCoaching = await Goal.findOne({ _id: req.params.id });
+    if (!foundCoaching) {
+      return res.status(404).json({ message: "Objectif non trouvé" });
+    }
+
+    const updatedProject = await Goal.findOneAndUpdate(
+      { _id: foundCoaching._id },
+      { ...req.body },
+      { new: true }
+    );
+    const { idCoachee } = req.params;
+    const allGoals = await Goal.find({ idCoachee: idCoachee }).populate('idCoach').populate('idCoachee').exec();
+
+    return res.status(200).json({
+      message: "Objectif mis à jour avec succès",
+      updatedData: updatedProject,
+      allData : allGoals
+    });
+  } catch (error) {
+    return res.status(400).json({ message: error.message });
+  }
+};
+
+
 exports.remove = async (req, res) => {
   try {
     // code ici
