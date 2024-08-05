@@ -93,3 +93,23 @@ exports.remove = async (req, res) => {
       .json({ error: "Objectif non supprimé !", details: error.message });
   }
 };
+
+// Controller to list goals by idCoach
+exports.listGoalsByCoach = async (req, res) => {
+  const { idCoach } = req.params;
+
+  try {
+    const goals = await Goal.find({ idCoach })
+      .populate('idCoach', 'name') // Adjust fields to populate as needed
+      .populate('idCoachee', 'name'); // Adjust fields to populate as needed
+
+    if (!goals) {
+      return res.status(404).json({ message: 'No goals found for this coach' });
+    }
+
+    res.status(200).json(goals);
+  } catch (error) {
+    res.status(500).json({ message: 'Server error', error });
+  }
+};
+
