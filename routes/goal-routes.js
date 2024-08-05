@@ -7,7 +7,8 @@ const {
   remove,
   listGoalsByCoach,
   listGoalsByIdCoachee,
-  updateByCoach
+  updateByCoach,
+  updateByCoachee
 } = require("../controllers/goal_controller");
 
 router.get("/", findAll);
@@ -17,6 +18,7 @@ router.get("/coachee/:idCoachee", listGoalsByIdCoachee);
 router.post("/", create);
 router.put("/:id", update);
 router.put("/coach/:id", updateByCoach);
+router.put("/coachee/:id", updateByCoachee);
 router.delete("/:id", remove);
 
 module.exports = router;
