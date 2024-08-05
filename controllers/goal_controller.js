@@ -113,3 +113,14 @@ exports.listGoalsByCoach = async (req, res) => {
   }
 };
 
+// Controller to list goals by idCoachee
+exports.listGoalsByIdCoachee = async (req, res) => {
+  const { idCoachee } = req.params;
+  
+  try {
+    const goals = await Goal.find({ idCoachee: idCoachee }).populate('idCoach').populate('idCoachee').exec();
+    res.status(200).json(goals);
+  } catch (error) {
+    res.status(500).json({ message: 'Error retrieving goals', error });
+  }
+};

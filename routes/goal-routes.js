@@ -12,6 +12,7 @@ const {
 router.get("/", findAll);
 router.get("/:id", getOne);
 router.get("/coach/:idCoach", listGoalsByCoach);
+router.get("/coachee/:idCoachee", listGoalsByIdCoachee);
 router.post("/", create);
 router.put("/:id", update);
 router.delete("/:id", remove);
