@@ -168,3 +168,59 @@ exports.editquestion = async (req, res) => {
     res.status(500).json({ message: "Error updating question", error });
   }
 };
+
+exports.editanswer = async (req, res) => {
+  try {
+    const { evaluationId, facteurId, questionId, evalId } = req.params;
+    const { coach, coachee, score_by_coach, status_by_coach } = req.body;
+
+    // Validate ObjectIds
+    if (!mongoose.Types.ObjectId.isValid(evaluationId) ||
+      !mongoose.Types.ObjectId.isValid(facteurId) ||
+      !mongoose.Types.ObjectId.isValid(questionId) ||
+      !mongoose.Types.ObjectId.isValid(evalId)) {
+      return res.status(400).json({ message: "Invalid ID format" });
+    }
+
+    // Find the evaluation by ID
+    const evaluation = await Evaluation.findById(evaluationId);
+
+    if (!evaluation) {
+      return res.status(404).json({ message: "Evaluation not found" });
+    }
+
+    // Find the specific facteur
+    const facteur = evaluation.facteur.id(facteurId);
+
+    if (!facteur) {
+      return res.status(404).json({ message: "Facteur not found" });
+    }
+
+    // Find the specific question
+    const question = facteur.questions.id(questionId);
+
+    if (!question) {
+      return res.status(404).json({ message: "Question not found" });
+    }
+
+    // Find the specific evaluation
+    const existingEval = question.evaluations.id(evalId);
+
+    if (!existingEval) {
+      return res.status(404).json({ message: "Evaluation not found" });
+    }
+
+    // Update the evaluation fields if provided
+    if (coach) existingEval.coach = coach;
+    if (coachee) existingEval.coachee = coachee;
+    if (score_by_coach !== undefined) existingEval.score_by_coach = score_by_coach;
+    if (status_by_coach) existingEval.status_by_coach = status_by_coach;
+
+    // Save the updated evaluation document
+    await evaluation.save();
+
+    res.status(200).json({ message: "Evaluation updated successfully", evaluation });
+  } catch (error) {
+    res.status(500).json({ message: "Error updating evaluation", error });
+  }
+};
