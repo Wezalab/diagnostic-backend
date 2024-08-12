@@ -122,3 +122,49 @@ exports.eval = async (req, res) => {
     res.status(500).json({ message: "Error adding evaluation", error });
   }
 };
+
+
+// Route to edit a question
+exports.editquestion = async (req, res) => {
+  try {
+    const { evaluationId, facteurId, questionId } = req.params;
+    const { question, recommandations } = req.body;
+
+    // Find the evaluation by ID
+    const evaluation = await Evaluation.findById(evaluationId);
+
+    if (!evaluation) {
+      return res.status(404).json({ message: "Evaluation not found" });
+    }
+
+    // Find the specific facteur
+    const facteur = evaluation.facteur.id(facteurId);
+
+    if (!facteur) {
+      return res.status(404).json({ message: "Facteur not found" });
+    }
+
+    // Find the specific question
+    const existingQuestion = facteur.questions.id(questionId);
+
+    if (!existingQuestion) {
+      return res.status(404).json({ message: "Question not found" });
+    }
+
+    // Update the question and recommandations if provided
+    if (question) {
+      existingQuestion.question = question;
+    }
+
+    if (recommandations) {
+      existingQuestion.recommandations = recommandations;
+    }
+
+    // Save the updated evaluation document
+    await evaluation.save();
+
+    res.status(200).json({ message: "Question updated successfully", evaluation });
+  } catch (error) {
+    res.status(500).json({ message: "Error updating question", error });
+  }
+};

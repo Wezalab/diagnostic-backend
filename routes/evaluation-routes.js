@@ -6,6 +6,7 @@ const {
   update,
   remove,
   eval,
+  editquestion,
 } = require("../controllers/evaluation_controller");
 
 router.get("/", findAll);
@@ -14,6 +15,9 @@ router.post("/", create);
 router.put("/:id", update);
 router.delete("/:id", remove);
 router.post("/:evaluationId/facteur/:facteurId/question/:questionId/eval", eval);
+router.post("/:evaluationId/facteur/:facteurId/question/:questionId", editquestion);
+
+
 
 
 module.exports = router;
