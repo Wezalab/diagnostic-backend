@@ -8,6 +8,7 @@ const evaSchema = mongoose.Schema({
   status_by_coach: {
     type: String,
     enum: ["En attente", "Necessite Changement", "Refusé", "Approuvé"],
+    default: "En attente",
   },
 });
 
