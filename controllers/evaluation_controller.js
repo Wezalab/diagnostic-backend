@@ -174,14 +174,6 @@ exports.editanswer = async (req, res) => {
     const { evaluationId, facteurId, questionId, evalId } = req.params;
     const { coach, coachee, score_by_coach, status_by_coach } = req.body;
 
-    // Validate ObjectIds
-    if (!mongoose.Types.ObjectId.isValid(evaluationId) ||
-      !mongoose.Types.ObjectId.isValid(facteurId) ||
-      !mongoose.Types.ObjectId.isValid(questionId) ||
-      !mongoose.Types.ObjectId.isValid(evalId)) {
-      return res.status(400).json({ message: "Invalid ID format" });
-    }
-
     // Find the evaluation by ID
     const evaluation = await Evaluation.findById(evaluationId);
 
@@ -205,9 +197,10 @@ exports.editanswer = async (req, res) => {
 
     // Find the specific evaluation
     const existingEval = question.evaluations.id(evalId);
+    console.log(evalId);
 
     if (!existingEval) {
-      return res.status(404).json({ message: "Evaluation not found" });
+      return res.status(404).json({ message: "This answer not found" });
     }
 
     // Update the evaluation fields if provided
