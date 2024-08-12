@@ -80,6 +80,7 @@ exports.eval = async (req, res) => {
   try {
     const { evaluationId, facteurId, questionId } = req.params;
     const { coach, coachee, score_by_coach, status_by_coach } = req.body;
+    console.log("ok");
 
     // Find the evaluation by ID
     const evaluation = await Evaluation.findById(evaluationId);

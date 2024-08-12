@@ -5,6 +5,7 @@ const {
   create,
   update,
   remove,
+  eval,
 } = require("../controllers/evaluation_controller");
 
 router.get("/", findAll);
