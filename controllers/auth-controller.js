@@ -22,6 +22,8 @@ exports.signup = async (req, res) => {
       role,
       profile_picture,
       cover_picture,
+      experience,
+      bio
     } = req.body;
 
     let randomImageId = 0;
@@ -70,6 +72,8 @@ exports.signup = async (req, res) => {
       role,
       profile_picture: profile_picture || randomProfilePicture,
       cover_picture,
+      experience,
+      bio
     });
 
     // Save the user and get the saved user object
@@ -116,6 +120,8 @@ exports.login = async (req, res) => {
       username: foundUser.username,
       profile_picture: foundUser.profile_picture,
       cover_picture: foundUser.cover_picture,
+      experience: foundUser.experience,
+      bio: foundUser.bio,
     };
 
     const token = jwt.sign(userData, SECRET_KEY, { expiresIn: "24h" });

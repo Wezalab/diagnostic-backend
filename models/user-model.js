@@ -26,6 +26,9 @@ const userSchema = mongoose.Schema({
     enum: ["ACTIVATED", "DEACTIVATED"],
     default: "DEACTIVATED",
   },
+  bio: { type: String },
+  experience: { type: String },
+
 });
 
 const User = mongoose.model("User", userSchema);
