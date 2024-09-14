@@ -28,7 +28,7 @@ const userSchema = mongoose.Schema({
   },
   bio: { type: String },
   experience: { type: String },
-
+  qualityCoach: [{ type: String }],
 });
 
 const User = mongoose.model("User", userSchema);

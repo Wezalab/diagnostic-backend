@@ -23,7 +23,8 @@ exports.signup = async (req, res) => {
       profile_picture,
       cover_picture,
       experience,
-      bio
+      bio,
+      qualityCoach
     } = req.body;
 
     let randomImageId = 0;
@@ -73,7 +74,8 @@ exports.signup = async (req, res) => {
       profile_picture: profile_picture || randomProfilePicture,
       cover_picture,
       experience,
-      bio
+      bio,
+      qualityCoach
     });
 
     // Save the user and get the saved user object
