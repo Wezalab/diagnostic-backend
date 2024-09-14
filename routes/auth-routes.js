@@ -9,6 +9,7 @@ const {
   centralAchatAuth,
   resetPasswordByCode,
   handleResetPasswordNoToken,
+  update,
 } = require("../controllers/auth-controller");
 
 router.post("/signup", signup);
@@ -21,5 +22,6 @@ router.post("/reset-password-no-token/:userId/", handleResetPasswordNoToken);
 router.get("/profile", profile);
 router.get("/user-list", findAll);
 router.post("/central-achat", centralAchatAuth );
+router.put("/update/:userId", update );
 
 module.exports = router;

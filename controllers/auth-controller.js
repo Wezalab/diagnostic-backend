@@ -386,4 +386,36 @@ exports.centralAchatAuth = async (req, res) => {
 };
 
 
+exports.update = async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const { name, mobile, sex, province, ville, bio, experience} = req.body;
+
+    // Find the user by email
+    const foundUser = await User.findOne({
+      _id: userId
+    });
+
+    if (!foundUser) {
+      return res.status(404).json({ message: "Utilisateur non trouvé" });
+    }
+
+    const updatedUser = await User.updateOne(
+      { _id: userId },
+      { ...req.body },
+      { new: true }
+    );
+
+    return res.status(200).json({
+      message: "Utilisateur mis à jour avec succès",
+      updatedData: updatedUser,
+    });
+  
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+};
+
+
+
 exports.profile = async (req, res) => { };
