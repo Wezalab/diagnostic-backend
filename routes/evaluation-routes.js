@@ -8,6 +8,7 @@ const {
   eval,
   editquestion,
   editanswer,
+  evalMultiple,
 } = require("../controllers/evaluation_controller");
 
 router.get("/", findAll);
@@ -15,6 +16,7 @@ router.get("/:id", getOne);
 router.post("/", create);
 router.put("/:id", update);
 router.delete("/:id", remove);
+router.post("/evalmultiple", evalMultiple);
 router.post("/:evaluationId/facteur/:facteurId/question/:questionId", editquestion);
 router.post("/:evaluationId/facteur/:facteurId/question/:questionId/eval", eval);
 router.put("/:evaluationId/facteur/:facteurId/question/:questionId/eval/:evalId", editanswer );

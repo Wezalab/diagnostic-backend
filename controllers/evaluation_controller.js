@@ -119,9 +119,68 @@ exports.eval = async (req, res) => {
 
     res.status(200).json({ message: "Evaluation added successfully", evaluation });
   } catch (error) {
+    console.log("Error", error);
+
     res.status(500).json({ message: "Error adding evaluation", error });
   }
 };
+
+exports.evalMultiple = async (req, res) => {
+  try {
+    const { evaluations } = req.body; // Expecting an array of evaluations
+
+    if (!evaluations || evaluations.length === 0) {
+      return res.status(400).json({ message: "No evaluations provided" });
+    }
+
+    // Loop through each evaluation in the array
+    for (let evalData of evaluations) {
+      const { evaluationId, facteurId, questionId, coach, coachee, score_by_coach, status_by_coach } = evalData;
+
+      // Find the evaluation by ID
+      const evaluation = await Evaluation.findById(evaluationId);
+
+      if (!evaluation) {
+        return res.status(404).json({ message: `Evaluation not found for ID: ${evaluationId}` });
+      }
+
+      // Find the specific facteur
+      const facteur = evaluation.facteur.id(facteurId);
+
+      if (!facteur) {
+        return res.status(404).json({ message: `Facteur not found for ID: ${facteurId}` });
+      }
+
+      // Find the specific question
+      const question = facteur.questions.id(questionId);
+
+      if (!question) {
+        return res.status(404).json({ message: `Question not found for ID: ${questionId}` });
+      }
+
+      // Create the new evaluation
+      const newEvaluation = {
+        coach,
+        coachee,
+        score_by_coach,
+        status_by_coach,
+      };
+
+      // Push the new evaluation to the evaluations array of the question
+      question.evaluations.push(newEvaluation);
+
+      // Save the updated evaluation document
+      await evaluation.save();
+    }
+
+    // If all evaluations were saved successfully
+    res.status(200).json({ message: "All evaluations added successfully" });
+  } catch (error) {
+    console.log("Error", error);
+    res.status(500).json({ message: "Error adding evaluations", error });
+  }
+};
+
 
 
 // Route to edit a question
