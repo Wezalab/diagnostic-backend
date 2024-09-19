@@ -124,7 +124,7 @@ exports.eval = async (req, res) => {
   }
 };
 
-exports.evalMultiple = async (req, res) => {
+exports.evalMultipleOld = async (req, res) => {
   try {
     const { evaluations } = req.body; // Expecting an array of evaluations
 
@@ -179,6 +179,53 @@ exports.evalMultiple = async (req, res) => {
     res.status(500).json({ message: "Error adding evaluations", error });
   }
 };
+
+exports.evalMultiple = async (req, res) => {
+  try {
+    const { evaluations } = req.body;
+
+    if (!evaluations || !Array.isArray(evaluations) || evaluations.length === 0) {
+      return res.status(400).json({ message: "No valid evaluations provided" });
+    }
+
+    const results = await Promise.all(evaluations.map(async (evalData) => {
+      const { evaluationId, facteurId, questionId, coach, coachee, score_by_coach, status_by_coach } = evalData;
+
+      const evaluation = await Evaluation.findById(evaluationId);
+      if (!evaluation) {
+        return { error: `Evaluation not found for ID: ${evaluationId}` };
+      }
+
+      const facteur = evaluation.facteur.id(facteurId);
+      if (!facteur) {
+        return { error: `Facteur not found for ID: ${facteurId}` };
+      }
+
+      const question = facteur.questions.id(questionId);
+      if (!question) {
+        return { error: `Question not found for ID: ${questionId}` };
+      }
+
+      const newEvaluation = { coach, coachee, score_by_coach, status_by_coach };
+      question.evaluations.push(newEvaluation);
+      await evaluation.save();
+
+      return { success: true, evaluationId };
+    }));
+
+    const errors = results.filter(result => result.error);
+    if (errors.length > 0) {
+      return res.status(400).json({ message: "Some evaluations could not be added", errors });
+    }
+
+    res.status(200).json({ message: "All evaluations added successfully" });
+  } catch (error) {
+    console.error("Error", error);
+    res.status(500).json({ message: "Error adding evaluations", error: error.message });
+  }
+};
+
+
 
 
 
