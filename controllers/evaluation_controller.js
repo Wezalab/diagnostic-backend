@@ -24,7 +24,6 @@ exports.getOne = async (req, res) => {
 
 exports.create = async (req, res) => {
   try {
-    // code ici
     const newEvaluation = new Evaluation(req.body);
     const savedEvaluation = await newEvaluation.save();
     return res.status(201).json(savedEvaluation);
@@ -57,17 +56,17 @@ exports.update = async (req, res) => {
   }
 };
 
+
 exports.remove = async (req, res) => {
   try {
-    // code ici
     const foundEvaluation = await Evaluation.findOne({ _id: req.params.id });
     if (!foundEvaluation) {
       return res.status(404).json({ error: "Evaluation non trouvée !" });
     }
-    const deletedProject = await Evaluation.findOneAndDelete({ _id: foundEvaluation._id });
+    const deletedEvaluation = await Evaluation.findOneAndDelete({ _id: foundEvaluation._id });
     return res.json({
       message: "Evaluation supprimée avec succès",
-      deletedData: deletedProject,
+      deletedData: deletedEvaluation,
     });
   } catch (error) {
     return res
