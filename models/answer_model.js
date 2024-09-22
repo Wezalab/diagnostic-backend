@@ -12,6 +12,7 @@ const answersSchema = mongoose.Schema({
 });
 
 const answerSchema = new mongoose.Schema({
+  level: { type: String, enum: ["1", "2", "3", "4", "5"], default: "1" },
   coach: { type: mongoose.Schema.Types.ObjectId, ref: "User" }, // Coach
   coachee: { type: mongoose.Schema.Types.ObjectId, ref: "User" }, // Coachee
   date: { type: Date, default: Date.now },
