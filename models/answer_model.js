@@ -3,6 +3,7 @@ const mongoose = require("mongoose");
 const answersSchema = mongoose.Schema({
   idQuestion: { type: mongoose.Schema.Types.ObjectId },
   score_by_coach: { type: Number },
+  answer: { type: Number },
   status_by_coach: {
     type: String,
     enum: ["En attente", "Necessite Changement", "Refusé", "Approuvé"],

@@ -126,3 +126,11 @@ exports.deleteIndividualAnswer = async (req, res) => {
     res.status(400).json({ message: error.message });
   }
 };
+
+// dispatch(createAnswer(newAnswerData));
+// dispatch(fetchAnswers());
+// dispatch(getAnswerById(answerId));
+// dispatch(updateAnswer({ id: answerId, updateData }));
+// dispatch(deleteAnswer(answerId));
+// dispatch(updateOrCreateIndividualAnswer({ id: answerId, individualAnswerData }));
+// dispatch(deleteIndividualAnswer({ id: answerId, answerId: individualAnswerId }));
