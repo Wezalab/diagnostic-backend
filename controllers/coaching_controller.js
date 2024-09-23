@@ -62,10 +62,10 @@ exports.remove = async (req, res) => {
     if (!foundCoaching) {
       return res.status(404).json({ error: "Coaching not found" });
     }
-    const deletedProject = await Coaching.findByIdAndDelete(req.params.id);
+    const deletedCoaching = await Coaching.findByIdAndDelete(req.params.id);
     return res.json({
       message: "Coaching deleted successfully",
-      deletedData: deletedProject,
+      deletedData: deletedCoaching,
     });
   } catch (error) {
     return res
