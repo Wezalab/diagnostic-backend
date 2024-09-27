@@ -15,8 +15,8 @@ exports.createAnswer = async (req, res) => {
 exports.getAllAnswers = async (req, res) => {
   try {
     const answers = await Answer.find()
-      .populate('coach', 'name')
-      .populate('coachee', 'name')
+      .populate('coach')
+      .populate('coachee')
       .populate('evaluation');
     res.status(200).json(answers);
   } catch (error) {
