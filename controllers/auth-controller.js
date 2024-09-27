@@ -23,6 +23,40 @@ const sendWelcomeSMS = async (phoneNumber, name) => {
   }
 };
 
+// Function to send welcome email using cPanel SMTP
+const sendWelcomeEmail = async (email, name) => {
+  try {
+    const transporter = nodemailer.createTransport({
+      host: process.env.SMTP_HOST,
+      port: process.env.SMTP_PORT,
+      secure: true, // Use SSL
+      auth: {
+        user: process.env.SMTP_USER,
+        pass: process.env.SMTP_PASS,
+      },
+    });
+
+    const mailOptions = {
+      from: process.env.SMTP_FROM,
+      to: email,
+      subject: "Bienvenue sur notre plateforme",
+      html: `
+        <img src="https://transforme.cd/storage/settings/September2023/w9j8CYEpPXjQ6r9PiRPS.png" alt="transforme image" width="300" height="150">
+        <h1>Bienvenue ${name}!</h1>
+        <p>Nous sommes ravis de vous accueillir sur notre plateforme.</p>
+        <p>Votre compte a été créé avec succès. Vous pouvez maintenant vous connecter et commencer à utiliser nos services.</p>
+        <p>Si vous avez des questions, n'hésitez pas à nous contacter.</p>
+        <p>Cordialement,<br>L'équipe business360</p>
+      `,
+    };
+
+    await transporter.sendMail(mailOptions);
+    console.log('Welcome email sent successfully');
+  } catch (error) {
+    console.error('Error sending welcome email:', error);
+  }
+};
+
 exports.signup = async (req, res) => {
   try {
     const {
@@ -108,6 +142,9 @@ exports.signup = async (req, res) => {
 
     // Send welcome SMS
     await sendWelcomeSMS(mobile, name);
+
+    // Send welcome email
+    await sendWelcomeEmail(email, name);
 
     return res
       .status(200)
