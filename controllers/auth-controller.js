@@ -7,10 +7,20 @@ const twilio = require('twilio');
 require("dotenv").config();
 
 // Initialize Twilio client
-const twilioClient = twilio(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
+let twilioClient;
+try {
+  twilioClient = twilio(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
+} catch (error) {
+  console.error('Error initializing Twilio client:', error.message);
+}
 
 // Function to send welcome SMS
 const sendWelcomeSMS = async (phoneNumber, name) => {
+  if (!twilioClient) {
+    console.error('Twilio client not initialized. SMS not sent.');
+    return;
+  }
+
   try {
     await twilioClient.messages.create({
       body: `Bienvenue ${name} sur notre plateforme! Nous sommes ravis de vous avoir parmi nous.`,
@@ -19,7 +29,7 @@ const sendWelcomeSMS = async (phoneNumber, name) => {
     });
     console.log('Welcome SMS sent successfully');
   } catch (error) {
-    console.error('Error sending welcome SMS:', error);
+    console.error('Error sending welcome SMS:', error.message);
   }
 };
 
@@ -293,44 +303,38 @@ exports.resetPasswordByCode = async (req, res) => {
     // Save the user with the reset token and expiration
     await user.save();
 
-    // Send an email with the reset link
-    // const resetLink = `${process.env.BASE_URL}/auth/reset-password/${user._id}/${resetToken}`;
-
     const transporter = nodemailer.createTransport({
-      service: "gmail",
+      host: process.env.SMTP_HOST,
+      port: process.env.SMTP_PORT,
+      secure: true, // Use SSL
       auth: {
-        user: "bvenceslas@gmail.com",
-        pass: process.env.APP_PASSWORD,
+        user: process.env.SMTP_USER,
+        pass: process.env.SMTP_PASS,
       },
     });
 
     const mailOptions = {
-      from: "no-reply@business360.cd",
+      from: process.env.SMTP_FROM,
       to: user.email,
       subject: "Réinitialisez votre mot de passe",
       html: `
         <img src="https://transforme.cd/storage/settings/September2023/w9j8CYEpPXjQ6r9PiRPS.png" alt="transforme image" width="300" height="150">
-        <p>Bienvenu(e) ${user.name},</p>
-        <p>Vous avez demandé la réinitialisation de votre mot de passe. Voici votre code:</p>
-        <h1>${code}</h1>
+        <h1>Réinitialisation de mot de passe</h1>
+        <p>Bonjour ${user.name},</p>
+        <p>Vous avez demandé la réinitialisation de votre mot de passe. Voici votre code de réinitialisation:</p>
+        <h2>${code}</h2>
         <p>Si vous n'avez pas demandé de réinitialisation de mot de passe, vous pouvez ignorer cet e-mail.</p>
-        <p>Cordialement,<br>business360</p>
-        
+        <p>Cordialement,<br>L'équipe business360</p>
       `,
     };
 
-    transporter.sendMail(mailOptions, function (error, info) {
-      if (error) {
-        console.error(error);
-        return res.status(500).json({ message: "Echec de l'envoi du e-mail" });
-      } else {
-        console.log("E-mail de réinitialisation envoyé: " + info.response);
-        return res
-          .status(200)
-          .json({ message: "E-mail de réinitialisation envoyé avec succès" });
-      }
-    });
+    await transporter.sendMail(mailOptions);
+    console.log("E-mail de réinitialisation avec code envoyé: " + user.email);
+    return res
+      .status(200)
+      .json({ message: "E-mail de réinitialisation envoyé avec succès" });
   } catch (error) {
+    console.error('Error in resetPasswordByCode:', error);
     return res.status(500).json({ message: error.message });
   }
 };
