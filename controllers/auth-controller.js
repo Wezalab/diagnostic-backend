@@ -3,7 +3,25 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const crypto = require("crypto");
 const nodemailer = require("nodemailer");
+const twilio = require('twilio');
 require("dotenv").config();
+
+// Initialize Twilio client
+const twilioClient = twilio(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
+
+// Function to send welcome SMS
+const sendWelcomeSMS = async (phoneNumber, name) => {
+  try {
+    await twilioClient.messages.create({
+      body: `Bienvenue ${name} sur notre plateforme! Nous sommes ravis de vous avoir parmi nous.`,
+      from: process.env.TWILIO_PHONE_NUMBER,
+      to: phoneNumber
+    });
+    console.log('Welcome SMS sent successfully');
+  } catch (error) {
+    console.error('Error sending welcome SMS:', error);
+  }
+};
 
 exports.signup = async (req, res) => {
   try {
@@ -87,6 +105,9 @@ exports.signup = async (req, res) => {
 
     // Extract the _id from the saved user object
     const savedUserId = savedUser._id;
+
+    // Send welcome SMS
+    await sendWelcomeSMS(mobile, name);
 
     return res
       .status(200)
