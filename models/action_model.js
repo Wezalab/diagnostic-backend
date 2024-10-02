@@ -19,9 +19,19 @@ const actionSchema = new mongoose.Schema({
   },
   description: {type: String},
   attachements : {type: [String]},
+  score: {
+    type: Number,
+    min: 0,
+    max: 100,
+    default: 0
+  },
+  status_by_coach: {
+    type: String,
+    enum: ["En attente", "Necessite Changement", "Refusé", "Approuvé"],
+    default: "En attente",
+  },
   createdAt: { type: Date, default: Date.now() },
   updatedAt: { type: Date, default: Date.now() }
-
 });
 
 const Action = mongoose.model("Action", actionSchema);
