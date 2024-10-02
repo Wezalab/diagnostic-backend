@@ -182,3 +182,12 @@ exports.listGoalsByIdCoachee = async (req, res) => {
     res.status(500).json({ message: 'Error retrieving goals', error });
   }
 };
+
+exports.removeAll = async (req, res) => {
+  try {
+    await Goal.deleteMany({});
+    res.status(200).json({ message: "All goals have been deleted successfully." });
+  } catch (error) {
+    res.status(500).json({ message: "Error deleting all goals", error: error.message });
+  }
+};

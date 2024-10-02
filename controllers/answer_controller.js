@@ -127,6 +127,15 @@ exports.deleteIndividualAnswer = async (req, res) => {
   }
 };
 
+exports.removeAll = async (req, res) => {
+  try {
+    await Answer.deleteMany({});
+    res.status(200).json({ message: "All answers have been deleted successfully." });
+  } catch (error) {
+    res.status(500).json({ message: "Error deleting all answers", error: error.message });
+  }
+};
+
 // dispatch(createAnswer(newAnswerData));
 // dispatch(fetchAnswers());
 // dispatch(getAnswerById(answerId));

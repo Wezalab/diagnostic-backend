@@ -7,7 +7,8 @@ const {
   updateAnswer, 
   deleteAnswer, 
   updateOrCreateIndividualAnswer, 
-  deleteIndividualAnswer
+  deleteIndividualAnswer,
+  removeAll
 } = require("../controllers/answer_controller");
 
 
@@ -18,5 +19,6 @@ router.put('/:id', updateAnswer);
 router.delete('/:id', deleteAnswer);
 router.put('/:id/individual-answer', updateOrCreateIndividualAnswer);
 router.delete('/:id/individual-answer/:answerId', deleteIndividualAnswer);
+router.delete("/", removeAll);
 
 module.exports = router;
