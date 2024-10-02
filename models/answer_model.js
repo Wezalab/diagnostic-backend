@@ -24,7 +24,9 @@ const answerSchema = new mongoose.Schema({
     default: "En attente",
   },
   evaluation: { type: mongoose.Schema.Types.ObjectId, ref: "Evaluation" },
-  answers: { type: [answersSchema], default: [] }
+  answers: { type: [answersSchema], default: [] },
+  createdAt: { type: Date, default: Date.now() },
+  updatedAt: { type: Date, default: Date.now() },
 });
 
 const Answer = mongoose.model("Answer", answerSchema);

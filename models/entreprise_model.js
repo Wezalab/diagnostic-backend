@@ -355,6 +355,8 @@ const entrepriseSchema = mongoose.Schema({
   team: { type: [team] },
   team_evaluation: { type: [evaluationTeamSchema], default: [] },
   owner: { type: mongoose.Schema.Types.ObjectId, ref: "User" }, // Owner
+  createdAt: { type: Date, default: Date.now() },
+  updatedAt: { type: Date, default: Date.now() },
 });
 
 const Entreprise = mongoose.model("Entreprises", entrepriseSchema);

@@ -14,7 +14,9 @@ const sessionSchema = new mongoose.Schema({
   description: { type: String,  default: ""},
   start : { type: Date, default: Date.now()},
   end: { type: Date, default: Date.now()},
-  gmail: { type: String,  default: ""}
+  gmail: { type: String,  default: ""},
+  createdAt: { type: Date, default: Date.now() },
+  updatedAt: { type: Date, default: Date.now() },
 });
 
 const Session = mongoose.model("Session", sessionSchema);

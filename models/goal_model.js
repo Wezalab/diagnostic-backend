@@ -5,6 +5,8 @@ const chat = mongoose.Schema({
   date: { type: Date, default: Date.now() },
   owner: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
   attachements: { type: [String] },
+  createdAt: { type: Date, default: Date.now() },
+  updatedAt: { type: Date, default: Date.now() },
 });
 
 const goalSchema = new mongoose.Schema({
@@ -25,7 +27,8 @@ const goalSchema = new mongoose.Schema({
   cover: { type: String },
   label: { type: [String] },
   date_limite: { type: Date },
-
+  createdAt: { type: Date, default: Date.now() },
+  updatedAt: { type: Date, default: Date.now() },
   priority: {
     type: String,
     enum: ["LOW", "MEDIUM", "HIGH"],

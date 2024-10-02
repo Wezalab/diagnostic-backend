@@ -19,6 +19,8 @@ const actionSchema = new mongoose.Schema({
   },
   description: {type: String},
   attachements : {type: [String]},
+  createdAt: { type: Date, default: Date.now() },
+  updatedAt: { type: Date, default: Date.now() }
 
 });
 

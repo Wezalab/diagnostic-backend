@@ -388,6 +388,8 @@ const projectSchema = mongoose.Schema({
   team_evaluation: { type: [evaluationTeamSchema], default: [] },
   owner: { type: mongoose.Schema.Types.ObjectId, ref: "User" }, // Owner
   entreprise: { type: mongoose.Schema.Types.ObjectId, ref: "Entreprises" }, // Entreprises
+  createdAt: { type: Date, default: Date.now() },
+  updatedAt: { type: Date, default: Date.now() },
 });
 
 const Project = mongoose.model("Projects", projectSchema);
