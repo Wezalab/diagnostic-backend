@@ -35,11 +35,17 @@ exports.create = async (req, res) => {
     const savedGoal = await newGoal.save();
 
     let allGoal;
-    
+
     // Check if the role is "COACH" and idCoach exists
     if (req.body.role === "COACH" && req.body.idCoach) {
       allGoal = await Goal.find({ idCoach: req.body.idCoach });
-    } else {
+    } 
+    // Check if the role is "COACHE" and idCoachee exists
+    else if (req.body.role === "COACHE" && req.body.idCoachee && req.body.idCoachee.length > 0) {
+      allGoal = await Goal.find({ idCoachee: req.body.idCoachee[0] }); // Assuming you want to filter by the first idCoachee
+    } 
+    // Default to fetching all goals
+    else {
       allGoal = await Goal.find();
     }
 
