@@ -30,15 +30,22 @@ exports.getOne = async (req, res) => {
 
 exports.create = async (req, res) => {
   try {
-    // code ici
-    const newSession = new Goal(req.body);
-    const savedCoaching = await newSession.save();
+    // Create a new goal
+    const newGoal = new Goal(req.body);
+    const savedGoal = await newGoal.save();
 
-    const allCoaching = await Goal.find();
+    let allGoal;
+    
+    // Check if the role is "COACH" and idCoach exists
+    if (req.body.role === "COACH" && req.body.idCoach) {
+      allGoal = await Goal.find({ idCoach: req.body.idCoach });
+    } else {
+      allGoal = await Goal.find();
+    }
 
     return res.status(201).json({
-      createdData: savedCoaching,
-      allData : allCoaching
+      createdData: savedGoal,
+      allData: allGoal
     });
   } catch (error) {
     return res.status(400).json({ message: error.message });
@@ -60,12 +67,12 @@ exports.update = async (req, res) => {
       { new: true }
     );
 
-    const allCoaching = await Goal.find();
+    const allGoal = await Goal.find();
 
     return res.status(200).json({
       message: "Objectif mis à jour avec succès",
       updatedData: updatedProject,
-      allData : allCoaching
+      allData : allGoal
     });
   } catch (error) {
     return res.status(400).json({ message: error.message });
@@ -140,12 +147,12 @@ exports.remove = async (req, res) => {
       return res.status(404).json({ error: "Objectif non trouvé !" });
     }
     const deletedProject = await Goal.findOneAndDelete({ _id: foundCoaching._id });
-    const allCoaching = await Goal.find();
+    const allGoal = await Goal.find();
     
     return res.json({
       message: "Objectif supprimé avec succès",
       deletedData: deletedProject,
-      allData : allCoaching
+      allData : allGoal
     });
   } catch (error) {
     return res
