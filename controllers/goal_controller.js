@@ -148,7 +148,7 @@ exports.updateByCoachee = async (req, res) => {
 exports.remove = async (req, res) => {
   try {
     const foundCoaching = await Goal.findOne({ _id: req.params.id });
-    if (!foundCoaching) {ß
+    if (!foundCoaching) {
       return res.status(404).json({ error: "Objectif non trouvé !" });
     }
 
@@ -218,5 +218,42 @@ exports.removeAll = async (req, res) => {
     res.status(200).json({ message: "All goals have been deleted successfully." });
   } catch (error) {
     res.status(500).json({ message: "Error deleting all goals", error: error.message });
+  }
+};
+
+exports.deleteGoalByRoleAndUserId = async (req, res) => {
+  try {
+    const { id, role, userId } = req.params; // Extract goal ID, role, and user ID from request parameters
+
+    // Find the goal by ID
+    const foundGoal = await Goal.findOne({ _id: id });
+    if (!foundGoal) {
+      return res.status(404).json({ error: "Objectif non trouvé !" });
+    }
+
+    // Check the role and validate ownership
+    if (role === "COACH") {
+      // Ensure the goal belongs to the coach
+      if (foundGoal.idCoach.toString() !== userId) {
+        return res.status(403).json({ error: "Accès refusé !" });
+      }
+    } else if (role === "COACHE") {
+      // Ensure the goal belongs to the coachee
+      if (!foundGoal.idCoachee.includes(userId)) {
+        return res.status(403).json({ error: "Accès refusé !" });
+      }
+    } else {
+      return res.status(400).json({ error: "Rôle non valide !" });
+    }
+
+    // Proceed to delete the goal
+    const deletedGoal = await Goal.findOneAndDelete({ _id: foundGoal._id });
+
+    return res.json({
+      message: "Objectif supprimé avec succès",
+      deletedData: deletedGoal,
+    });
+  } catch (error) {
+    return res.status(500).json({ error: "Objectif non supprimé !", details: error.message });
   }
 };
