@@ -147,18 +147,34 @@ exports.updateByCoachee = async (req, res) => {
 
 exports.remove = async (req, res) => {
   try {
-    // code ici
     const foundCoaching = await Goal.findOne({ _id: req.params.id });
-    if (!foundCoaching) {
+    if (!foundCoaching) {ß
       return res.status(404).json({ error: "Objectif non trouvé !" });
     }
+
     const deletedProject = await Goal.findOneAndDelete({ _id: foundCoaching._id });
-    const allGoal = await Goal.find();
-    
+
+    let allGoal;
+    // Check the role from the request (assuming you have access to user role in req)
+    const userRole = req.body.role; // Adjust this based on how you pass the role
+
+    // If the role is "COACH", filter by idCoach
+    if (userRole === "COACH" && foundCoaching.idCoach) {
+      allGoal = await Goal.find({ idCoach: foundCoaching.idCoach });
+    } 
+    // If the role is "COACHE", filter by idCoachee
+    else if (userRole === "COACHE" && foundCoaching.idCoachee.length > 0) {
+      allGoal = await Goal.find({ idCoachee: foundCoaching.idCoachee[0] }); // Assuming you want to filter by the first idCoachee
+    } 
+    // Default to fetching all goals
+    else {
+      allGoal = await Goal.find();
+    }
+
     return res.json({
       message: "Objectif supprimé avec succès",
       deletedData: deletedProject,
-      allData : allGoal
+      allData: allGoal
     });
   } catch (error) {
     return res
