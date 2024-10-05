@@ -1,5 +1,14 @@
 const mongoose = require("mongoose");
 
+const chat = mongoose.Schema({
+  message: { type: String },
+  date: { type: Date, default: Date.now() },
+  owner: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+  attachements: { type: [String] },
+  createdAt: { type: Date, default: Date.now() },
+  updatedAt: { type: Date, default: Date.now() },
+});
+
 const actionSchema = new mongoose.Schema({
   coachMood: {type: String},
   status: {
@@ -30,6 +39,7 @@ const actionSchema = new mongoose.Schema({
     enum: ["En attente", "Necessite Changement", "Refusé", "Approuvé"],
     default: "En attente",
   },
+  chat: { type: [chat] },
   createdAt: { type: Date, default: Date.now() },
   updatedAt: { type: Date, default: Date.now() }
 });
