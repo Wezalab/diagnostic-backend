@@ -2,7 +2,7 @@ const Action = require("../models/action_model");
 
 exports.findAll = async (req, res) => {
   try {
-    const projects = await Action.find();
+    const actions = await Action.find();
     // .populate({
     //   path: "owner",
     //   select:
@@ -10,7 +10,7 @@ exports.findAll = async (req, res) => {
     // });
 
 
-    return res.status(200).json(projects);
+    return res.status(200).json(actions);
   } catch (error) {
     return res.status(400).json({ message: error.message });
   }
@@ -18,12 +18,12 @@ exports.findAll = async (req, res) => {
 
 exports.getOne = async (req, res) => {
   try {
-    const project = await Action.findOne({ _id: req.params.id });
-    if (!project) {
+    const action = await Action.findOne({ _id: req.params.id });
+    if (!action) {
       return res.status(404).json({ message: "Action non trouvé" });
     }
 
-    return res.status(200).json(project);
+    return res.status(200).json(action);
   } catch (error) {
     return res.status(400).json({ message: error.message });
   }
@@ -32,8 +32,8 @@ exports.getOne = async (req, res) => {
 exports.create = async (req, res) => {
   try {
     // code ici
-    const newSession = new Action(req.body);
-    const savedCoaching = await newSession.save();
+    const newAction = new Action(req.body);
+    const savedCoaching = await newAction.save();
     return res.status(201).json(savedCoaching);
   } catch (error) {
     return res.status(400).json({ message: error.message });
@@ -44,20 +44,22 @@ exports.create = async (req, res) => {
 exports.update = async (req, res) => {
   try {
     // vérifier si le projet existe
-    const foundCoaching = await Action.findOne({ _id: req.params.id });
-    if (!foundCoaching) {
+    const foundAction = await Action.findOne({ _id: req.params.id });
+    if (!foundAction) {
       return res.status(404).json({ message: "Action non trouvé" });
     }
 
-    const updatedProject = await Action.findOneAndUpdate(
-      { _id: foundCoaching._id },
+    const updatedAction = await Action.findOneAndUpdate(
+      { _id: foundAction._id },
       { ...req.body },
       { new: true }
     );
+    const actions = await Action.find();
 
     return res.status(200).json({
       message: "Action mis à jour avec succès",
-      updatedData: updatedProject,
+      updatedData: updatedAction,
+      allActions: actions
     });
   } catch (error) {
     return res.status(400).json({ message: error.message });
@@ -67,14 +69,14 @@ exports.update = async (req, res) => {
 exports.remove = async (req, res) => {
   try {
     // code ici
-    const foundCoaching = await Action.findOne({ _id: req.params.id });
-    if (!foundCoaching) {
+    const foundAction = await Action.findOne({ _id: req.params.id });
+    if (!foundAction) {
       return res.status(404).json({ error: "Action non trouvé !" });
     }
-    const deletedProject = await Action.findOneAndDelete({ _id: foundCoaching._id });
+    const deletedAction = await Action.findOneAndDelete({ _id: foundAction._id });
     return res.json({
       message: "Action supprimé avec succès",
-      deletedData: deletedProject,
+      deletedData: deletedAction,
     });
   } catch (error) {
     return res
