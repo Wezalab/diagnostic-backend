@@ -30,6 +30,7 @@ app.use("/api/social", require("./routes/social-routes"));
 app.use("/api/attachement", require("./routes/attachement-routes"));
 app.use("/api/evaluation", require("./routes/evaluation-routes"));
 app.use("/api/answer", require("./routes/answer-routes"));
+app.use("/api/invoice", require("./routes/invoice-routes"));
 
 app.listen(PORT, async () => {
   console.log(`Listening on port ${PORT}`);
