@@ -1,4 +1,5 @@
 const Session = require("../models/session_model");
+const Invoice = require("../models/invoice_model");
 
 exports.findAll = async (req, res) => {
   try {
@@ -77,5 +78,21 @@ exports.remove = async (req, res) => {
     return res
       .status(500)
       .json({ error: "Session non supprimé !", details: error.message });
+  }
+};
+
+// Get all sessions that are not in any invoice
+exports.getSessionsNotInAnyInvoice = async (req, res) => {
+  try {
+    // Find all session IDs that are referenced in invoices
+    const invoices = await Invoice.find().select('sessions');
+    const sessionIdsInInvoices = invoices.flatMap(invoice => invoice.sessions);
+
+    // Find all sessions that are not in the sessionIdsInInvoices
+    const sessionsNotInInvoices = await Session.find({ _id: { $nin: sessionIdsInInvoices } });
+
+    res.status(200).json(sessionsNotInInvoices);
+  } catch (error) {
+    res.status(500).json({ message: 'Error fetching sessions', error: error.message });
   }
 };
