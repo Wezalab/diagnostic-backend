@@ -96,3 +96,14 @@ exports.getSessionsNotInAnyInvoice = async (req, res) => {
     res.status(500).json({ message: 'Error fetching sessions', error: error.message });
   }
 };
+
+exports.fetchSessionsByCoacheeId = async (req, res) => {
+    const { coacheeId } = req.params; // Extract coacheeId from request parameters
+
+    try {
+        const sessions = await Session.find({ idCoachee: coacheeId }); // Fetch sessions where idCoachee contains the given id
+        return res.status(200).json(sessions); // Return the fetched sessions
+    } catch (error) {
+        return res.status(500).json({ message: "Error fetching sessions", error });
+    }
+}
