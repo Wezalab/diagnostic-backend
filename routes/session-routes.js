@@ -6,7 +6,8 @@ const {
   update,
   remove,
   getSessionsNotInAnyInvoice,
-  fetchSessionsByCoacheeId
+  fetchSessionsByCoacheeId,
+  fetchSessionsByCoachId
 } = require("../controllers/session_controller");
 
 router.get("/", findAll);
@@ -20,6 +21,9 @@ router.get('/not-in-invoice', getSessionsNotInAnyInvoice);
 
 // Route to fetch sessions by coacheeId
 router.get("/coachee/:coacheeId", fetchSessionsByCoacheeId);
+
+router.get("/sessions/coach/:coachId", fetchSessionsByCoachId);
+
 
 
 module.exports = router;

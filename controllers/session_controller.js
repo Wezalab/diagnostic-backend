@@ -6,8 +6,6 @@ exports.findAll = async (req, res) => {
     const session = await Session.find()
     .populate('idCoach')
     .populate('idCoachee');
-    
-
     return res.status(200).json(session);
   } catch (error) {
     return res.status(400).json({ message: error.message });
@@ -102,6 +100,17 @@ exports.fetchSessionsByCoacheeId = async (req, res) => {
 
     try {
         const sessions = await Session.find({ idCoachee: coacheeId }); // Fetch sessions where idCoachee contains the given id
+        return res.status(200).json(sessions); // Return the fetched sessions
+    } catch (error) {
+        return res.status(500).json({ message: "Error fetching sessions", error });
+    }
+}
+
+exports.fetchSessionsByCoachId= async (req, res) => {
+    const { coachId } = req.params; // Extract coachId from request parameters
+
+    try {
+        const sessions = await Session.find({ idCoach: coachId }); // Fetch sessions where idCoach equals the given id
         return res.status(200).json(sessions); // Return the fetched sessions
     } catch (error) {
         return res.status(500).json({ message: "Error fetching sessions", error });
