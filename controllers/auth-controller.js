@@ -249,6 +249,12 @@ exports.loginGoogle = async (req, res) => {
     };
 
     const token = jwt.sign(userData, SECRET_KEY, { expiresIn: "24h" });
+    
+    await User.updateOne(
+      { _id: foundUser._id },
+      { profile_picture: imageUrl },
+      { new: true }
+    );
 
     // envoyer email notifiant la creation du compte et demenadant son activation
     return await res.status(200).json({
