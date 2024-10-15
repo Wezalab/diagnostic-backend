@@ -10,10 +10,13 @@ const {
   resetPasswordByCode,
   handleResetPasswordNoToken,
   update,
+  loginGoogle
 } = require("../controllers/auth-controller");
 
 router.post("/signup", signup);
 router.post("/login", login);
+router.post("/login-google", loginGoogle);
+
 router.post("/reset-password", resetPassword);
 router.post("/reset-password-code", resetPasswordByCode);
 router.post("/reset-password/:userId/:resetToken", handleResetPassword);

@@ -217,6 +217,52 @@ exports.login = async (req, res) => {
   }
 };
 
+
+exports.loginGoogle = async (req, res) => {
+  try {
+    const { email, name, imageUrl } = req.body;
+
+    // check if the user exists
+    const foundUser = await User.findOne({ email });
+    if (!foundUser) {
+      return res.status(404).json({ message: "Utilisateur non trouvé" });
+    }
+
+    // generate token
+    const SECRET_KEY = process.env.SECRET_KEY;
+    const userData = {
+      userId: foundUser._id,
+      name: name,
+      email: foundUser.email,
+      mobile: foundUser.mobile,
+      sex: foundUser.sex,
+      role: foundUser.role,
+      username: foundUser.username,
+      profile_picture: imageUrl,
+      cover_picture: foundUser.cover_picture,
+      experience: foundUser.experience,
+      bio: foundUser.bio,
+      project: foundUser.project,
+      detailsOfProject: foundUser.detailsOfProject,
+      province: foundUser.province,
+      ville: foundUser.ville,
+    };
+
+    const token = jwt.sign(userData, SECRET_KEY, { expiresIn: "24h" });
+
+    // envoyer email notifiant la creation du compte et demenadant son activation
+    return await res.status(200).json({
+      message: "Connexion réussie",
+      user: {
+        token,
+        user: userData,
+      },
+    });
+  } catch (error) {
+    return res.status(500).json({ error: error.message });
+  }
+};
+
 exports.findAll = async (req, res) => {
   try {
     const users = await User.find().exec();
