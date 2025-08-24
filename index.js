@@ -2,6 +2,7 @@ const express = require("express");
 const morgan = require("morgan");
 const mongoose = require("mongoose");
 const cors = require("cors");
+const path = require("path");
 require("dotenv").config();
 
 // app middlewares
@@ -9,6 +10,9 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 app.use(morgan("dev"));
+
+// Static file serving for uploads
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // env variables
 const PORT = process.env.PORT || 4000;
@@ -31,6 +35,7 @@ app.use("/api/attachement", require("./routes/attachement-routes"));
 app.use("/api/evaluation", require("./routes/evaluation-routes"));
 app.use("/api/answer", require("./routes/answer-routes"));
 app.use("/api/invoice", require("./routes/invoice-routes"));
+app.use("/api/upload", require("./routes/upload-routes"));
 
 app.listen(PORT, async () => {
   console.log(`Listening on port ${PORT}`);
