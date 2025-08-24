@@ -4,7 +4,20 @@
   "description": "diagnostic 360 degre",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon index.js"
+    "start": "nodemon index.js",
+    "pm2:start": "pm2 start ecosystem.config.js",
+    "pm2:start:prod": "pm2 start ecosystem.config.js --env production",
+    "pm2:start:staging": "pm2 start ecosystem.config.js --env staging",
+    "pm2:restart": "pm2 restart diagnostic-backend",
+    "pm2:reload": "pm2 reload diagnostic-backend",
+    "pm2:stop": "pm2 stop diagnostic-backend",
+    "pm2:delete": "pm2 delete diagnostic-backend",
+    "pm2:status": "pm2 status",
+    "pm2:logs": "pm2 logs diagnostic-backend",
+    "pm2:monit": "pm2 monit",
+    "pm2:flush": "pm2 flush",
+    "pm2:save": "pm2 save",
+    "pm2:resurrect": "pm2 resurrect"
   },
   "repository": {
     "type": "git",
@@ -24,8 +37,14 @@
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.0.3",
     "morgan": "^1.10.0",
+    "multer": "^2.0.2",
     "nodemailer": "^6.9.8",
     "nodemon": "^3.0.2",
-    "twilio": "^5.3.2"
+    "sharp": "^0.34.3",
+    "twilio": "^5.3.2",
+    "uuid": "^11.1.0"
+  },
+  "devDependencies": {
+    "pm2": "^6.0.8"
   }
 }
