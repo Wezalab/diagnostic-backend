@@ -44,6 +44,7 @@ app.use("/api/evaluation", require("./routes/evaluation-routes"));
 app.use("/api/answer", require("./routes/answer-routes"));
 app.use("/api/invoice", require("./routes/invoice-routes"));
 app.use("/api/upload", require("./routes/upload-routes"));
+app.use("/api/coaching-requests", require("./routes/coaching_request_routes"));
 
 app.listen(PORT, async () => {
   console.log(`Listening on port ${PORT}`);
