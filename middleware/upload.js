@@ -116,7 +116,7 @@ const processImage = async (req, res, next) => {
             fs.renameSync(processedPath, originalPath);
 
             // Update file info
-            file.filename = file.filename.replace(path.extname(file.filename), '.jpeg');
+            file.filename = file.filename.replace(path.extname(file.filename), '.jpg');
             file.mimetype = 'image/jpeg';
             
             console.log('Image processed successfully:', file.filename);
