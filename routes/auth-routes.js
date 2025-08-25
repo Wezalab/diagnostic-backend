@@ -10,12 +10,15 @@ const {
   resetPasswordByCode,
   handleResetPasswordNoToken,
   update,
-  loginGoogle
+  loginGoogle,
+  registerGoogle,
+  testEmail
 } = require("../controllers/auth-controller");
 
 router.post("/signup", signup);
 router.post("/login", login);
 router.post("/login-google", loginGoogle);
+router.post("/register-google", registerGoogle);
 
 router.post("/reset-password", resetPassword);
 router.post("/reset-password-code", resetPasswordByCode);
@@ -26,5 +29,6 @@ router.get("/profile", profile);
 router.get("/user-list", findAll);
 router.post("/central-achat", centralAchatAuth );
 router.put("/update/:userId", update );
+router.post("/test-email", testEmail);
 
 module.exports = router;
