@@ -90,26 +90,49 @@ const processImage = async (req, res, next) => {
         const originalPath = file.path;
         const processedPath = originalPath.replace(path.extname(originalPath), '_processed.jpg');
         
-        // Process image with Sharp
-        await sharp(originalPath)
-          .resize(1200, 1200, {
-            fit: 'inside',
-            withoutEnlargement: true
-          })
-          .jpeg({
-            quality: 85,
-            progressive: true
-          })
-          .toFile(processedPath);
-
-        // Replace original file with processed version
-        fs.unlinkSync(originalPath);
-        fs.renameSync(processedPath, originalPath);
-
-        // Update file info
-        file.filename = file.filename.replace(path.extname(file.filename), '.jpg');
-        file.mimetype = 'image/jpeg';
+        console.log('Processing image:', {
+          originalPath,
+          processedPath,
+          exists: fs.existsSync(originalPath)
+        });
         
+        try {
+          // Process image with Sharp
+          await sharp(originalPath)
+            .resize(1200, 1200, {
+              fit: 'inside',
+              withoutEnlargement: true
+            })
+            .jpeg({
+              quality: 85,
+              progressive: true
+            })
+            .toFile(processedPath);
+
+          // Verify processed file was created
+          if (fs.existsSync(processedPath)) {
+            // Replace original file with processed version
+            fs.unlinkSync(originalPath);
+            fs.renameSync(processedPath, originalPath);
+
+            // Update file info
+            file.filename = file.filename.replace(path.extname(file.filename), '.jpg');
+            file.mimetype = 'image/jpeg';
+            
+            console.log('Image processed successfully:', file.filename);
+          } else {
+            console.error('Processed file was not created:', processedPath);
+            // Keep original file if processing failed
+          }
+        } catch (sharpError) {
+          console.error('Sharp processing failed:', sharpError);
+          // Keep original file if Sharp processing fails
+          // Don't modify filename if processing failed
+        }
+        
+        processedFiles.push(file);
+      } else {
+        // Non-image files or invalid files
         processedFiles.push(file);
       }
     }
