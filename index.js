@@ -8,7 +8,15 @@ require("dotenv").config();
 // app middlewares
 const app = express();
 app.use(express.json());
-app.use(cors());
+app.use(cors({
+  origin: [
+    'https://alphanew.coach',
+    'http://localhost:3000',
+    'http://localhost:3001',
+    'http://46.202.168.1:3000'
+  ],
+  credentials: true
+}));
 app.use(morgan("dev"));
 
 // Static file serving for uploads
