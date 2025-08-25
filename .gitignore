@@ -18,6 +18,9 @@ pids/
 *.seed
 *.pid.lock
 
+# SSL certificates (security sensitive)
+ssl/
+
 # Uploaded files (keep directory structure but exclude files)
 uploads/*
 !uploads/.gitkeep

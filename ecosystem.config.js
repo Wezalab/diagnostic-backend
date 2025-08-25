@@ -9,15 +9,18 @@ module.exports = {
       max_memory_restart: '1G',
       env: {
         NODE_ENV: 'development',
-        PORT: 4000
+        HTTP_PORT: 4000,
+        HTTPS_PORT: 4443
       },
       env_production: {
         NODE_ENV: 'production',
-        PORT: 4000
+        HTTP_PORT: 4000,
+        HTTPS_PORT: 4443
       },
       env_staging: {
         NODE_ENV: 'staging',
-        PORT: 4000
+        HTTP_PORT: 4000,
+        HTTPS_PORT: 4443
       },
       // Logging configuration
       log_file: './logs/combined.log',
