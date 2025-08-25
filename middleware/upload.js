@@ -88,38 +88,43 @@ const processImage = async (req, res, next) => {
     for (const file of files) {
       if (file && file.mimetype.startsWith('image/')) {
         const originalPath = file.path;
-        const processedPath = originalPath.replace(path.extname(originalPath), '_processed.jpg');
+        const originalExtension = path.extname(originalPath);
+        const processedPath = originalPath.replace(originalExtension, '_processed' + originalExtension);
         
         console.log('Processing image:', {
           originalPath,
           processedPath,
+          originalExtension,
           exists: fs.existsSync(originalPath)
         });
         
         try {
-          // Process image with Sharp
-          await sharp(originalPath)
+          // Process image with Sharp, keeping original format
+          let sharpInstance = sharp(originalPath)
             .resize(1200, 1200, {
               fit: 'inside',
               withoutEnlargement: true
-            })
-            .jpeg({
-              quality: 85,
-              progressive: true
-            })
-            .toFile(processedPath);
+            });
+
+          // Apply format-specific optimization while preserving format
+          if (originalExtension.toLowerCase() === '.jpg' || originalExtension.toLowerCase() === '.jpeg') {
+            sharpInstance = sharpInstance.jpeg({ quality: 85, progressive: true });
+          } else if (originalExtension.toLowerCase() === '.png') {
+            sharpInstance = sharpInstance.png({ quality: 85, progressive: true });
+          } else if (originalExtension.toLowerCase() === '.webp') {
+            sharpInstance = sharpInstance.webp({ quality: 85 });
+          }
+          // For other formats, Sharp will auto-detect and preserve
+
+          await sharpInstance.toFile(processedPath);
 
           // Verify processed file was created
           if (fs.existsSync(processedPath)) {
             // Replace original file with processed version
             fs.unlinkSync(originalPath);
             fs.renameSync(processedPath, originalPath);
-
-            // Update file info
-            file.filename = file.filename.replace(path.extname(file.filename), '.jpg');
-            file.mimetype = 'image/jpeg';
             
-            console.log('Image processed successfully:', file.filename);
+            console.log('Image processed successfully, kept original extension:', file.filename);
           } else {
             console.error('Processed file was not created:', processedPath);
             // Keep original file if processing failed
