@@ -3,6 +3,79 @@ const User = require("../models/user-model");
 const nodemailer = require("nodemailer");
 require("dotenv").config();
 
+// Standardized email header
+const getEmailHeader = (title, emoji = "📧") => {
+  return `
+    <!-- Header -->
+    <div style="background: linear-gradient(135deg, #38b6ff 0%, #02093d 100%); padding: 30px 20px; text-align: center;">
+      <img src="https://alphanew.coach/assets/logo.png" alt="ALPHA-NEW COACHING Logo" style="max-width: 200px; height: auto; margin-bottom: 15px;">
+      <h1 style="color: #ffffff; margin: 0; font-size: 28px; font-weight: 700; text-shadow: 0 2px 4px rgba(0,0,0,0.3);">
+        ${emoji} ${title}
+      </h1>
+    </div>
+  `;
+};
+
+// Standardized email footer
+const getEmailFooter = () => {
+  return `
+    <!-- Footer -->
+    <div style="background-color: #2c3e50; color: #ffffff; padding: 30px 20px;">
+      <div style="text-align: center; margin-bottom: 25px;">
+        <h3 style="margin: 0 0 15px 0; font-size: 20px; color: #ecf0f1;">
+          L'équipe ALPHA-NEW COACHING
+        </h3>
+        <p style="margin: 0; font-size: 14px; color: #bdc3c7;">
+          Votre partenaire pour l'excellence professionnelle
+        </p>
+      </div>
+      
+      <!-- Contact Info -->
+      <div style="border-top: 1px solid #34495e; padding-top: 20px; text-align: center;">
+        <div style="display: inline-block; margin: 0 20px; vertical-align: top;">
+          <h4 style="margin: 0 0 10px 0; color: #3498db; font-size: 16px;">📞 Nous appeler</h4>
+          <p style="margin: 0; color: #ecf0f1; font-size: 14px;">+243 993328512</p>
+        </div>
+        
+        <div style="display: inline-block; margin: 0 20px; vertical-align: top;">
+          <h4 style="margin: 0 0 10px 0; color: #3498db; font-size: 16px;">📍 Adresse</h4>
+          <p style="margin: 0; color: #ecf0f1; font-size: 14px;">Kinshasa, RDC</p>
+        </div>
+        
+        <div style="display: inline-block; margin: 0 20px; vertical-align: top;">
+          <h4 style="margin: 0 0 10px 0; color: #3498db; font-size: 16px;">📧 Email</h4>
+          <p style="margin: 0; color: #ecf0f1; font-size: 14px;">
+            <a href="mailto:get.alphanewcoach@gmail.com" style="color: #3498db; text-decoration: none;">
+              get.alphanewcoach@gmail.com
+            </a>
+          </p>
+        </div>
+      </div>
+      
+      <!-- Social Links -->
+      <div style="text-align: center; margin: 25px 0;">
+        <a href="https://alphanew.coach" style="color: #3498db; text-decoration: none; margin: 0 15px; font-size: 14px;">
+          🌐 Site Web
+        </a>
+        <a href="https://alphanew.coach/contact" style="color: #3498db; text-decoration: none; margin: 0 15px; font-size: 14px;">
+          💬 Contact
+        </a>
+        <a href="https://alphanew.coach/services" style="color: #3498db; text-decoration: none; margin: 0 15px; font-size: 14px;">
+          🎯 Services
+        </a>
+      </div>
+      
+      <!-- Copyright -->
+      <div style="border-top: 1px solid #34495e; padding-top: 20px; text-align: center;">
+        <p style="margin: 0; color: #95a5a6; font-size: 12px;">
+          © 2025 ALPHA-NEW COACHING - Powered by ALPHA-NEW SARL<br>
+          Tous droits réservés. Email automatisé depuis votre backend.
+        </p>
+      </div>
+    </div>
+  `;
+};
+
 // Email configuration
 const createEmailTransporter = () => {
   return nodemailer.createTransport({
@@ -29,13 +102,7 @@ const getCoachNewRequestEmailTemplate = (coachName, coacheeName, coacheeEmail, m
     <body style="margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f8f9fa;">
       <div style="max-width: 600px; margin: 0 auto; background-color: #ffffff; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
         
-        <!-- Header -->
-        <div style="background: linear-gradient(135deg, #38b6ff 0%, #02093d 100%); padding: 30px 20px; text-align: center;">
-          <img src="https://alphanew.coach/assets/logo.png" alt="ALPHA-NEW COACHING Logo" style="max-width: 200px; height: auto; margin-bottom: 15px;">
-          <h1 style="color: #ffffff; margin: 0; font-size: 28px; font-weight: 700; text-shadow: 0 2px 4px rgba(0,0,0,0.3);">
-            📩 Nouvelle Demande de Coaching
-          </h1>
-        </div>
+        ${getEmailHeader("Nouvelle Demande de Coaching", "📩")}
         
         <!-- Main Content -->
         <div style="padding: 40px 30px;">
@@ -88,15 +155,7 @@ const getCoachNewRequestEmailTemplate = (coachName, coacheeName, coacheeEmail, m
           </p>
         </div>
         
-        <!-- Footer -->
-        <div style="background-color: #02093d; color: #ffffff; padding: 30px 20px; text-align: center;">
-          <h3 style="margin: 0 0 15px 0; font-size: 20px; color: #ecf0f1;">
-            L'équipe ALPHA-NEW COACHING
-          </h3>
-          <p style="margin: 0; font-size: 14px; color: #bdc3c7;">
-            Votre partenaire pour l'excellence professionnelle
-          </p>
-        </div>
+        ${getEmailFooter()}
       </div>
     </body>
     </html>
@@ -116,13 +175,7 @@ const getCoacheeRequestSentEmailTemplate = (coacheeName, coachName, message) => 
     <body style="margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f8f9fa;">
       <div style="max-width: 600px; margin: 0 auto; background-color: #ffffff; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
         
-        <!-- Header -->
-        <div style="background: linear-gradient(135deg, #38b6ff 0%, #02093d 100%); padding: 30px 20px; text-align: center;">
-          <img src="https://alphanew.coach/assets/logo.png" alt="ALPHA-NEW COACHING Logo" style="max-width: 200px; height: auto; margin-bottom: 15px;">
-          <h1 style="color: #ffffff; margin: 0; font-size: 28px; font-weight: 700; text-shadow: 0 2px 4px rgba(0,0,0,0.3);">
-            ✅ Demande Envoyée
-          </h1>
-        </div>
+        ${getEmailHeader("Demande Envoyée", "✅")}
         
         <!-- Main Content -->
         <div style="padding: 40px 30px;">
@@ -168,15 +221,7 @@ const getCoacheeRequestSentEmailTemplate = (coacheeName, coachName, message) => 
           </div>
         </div>
         
-        <!-- Footer -->
-        <div style="background-color: #02093d; color: #ffffff; padding: 30px 20px; text-align: center;">
-          <h3 style="margin: 0 0 15px 0; font-size: 20px; color: #ecf0f1;">
-            L'équipe ALPHA-NEW COACHING
-          </h3>
-          <p style="margin: 0; font-size: 14px; color: #bdc3c7;">
-            Votre partenaire pour l'excellence professionnelle
-          </p>
-        </div>
+        ${getEmailFooter()}
       </div>
     </body>
     </html>
@@ -196,13 +241,7 @@ const getCoacheeRequestAcceptedEmailTemplate = (coacheeName, coachName, coachEma
     <body style="margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f8f9fa;">
       <div style="max-width: 600px; margin: 0 auto; background-color: #ffffff; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
         
-        <!-- Header -->
-        <div style="background: linear-gradient(135deg, #28a745 0%, #20c997 100%); padding: 30px 20px; text-align: center;">
-          <img src="https://alphanew.coach/assets/logo.png" alt="ALPHA-NEW COACHING Logo" style="max-width: 200px; height: auto; margin-bottom: 15px;">
-          <h1 style="color: #ffffff; margin: 0; font-size: 28px; font-weight: 700; text-shadow: 0 2px 4px rgba(0,0,0,0.3);">
-            🎉 Demande Acceptée !
-          </h1>
-        </div>
+        ${getEmailHeader("Demande Acceptée !", "🎉")}
         
         <!-- Main Content -->
         <div style="padding: 40px 30px;">
@@ -259,15 +298,7 @@ const getCoacheeRequestAcceptedEmailTemplate = (coacheeName, coachName, coachEma
           </div>
         </div>
         
-        <!-- Footer -->
-        <div style="background-color: #02093d; color: #ffffff; padding: 30px 20px; text-align: center;">
-          <h3 style="margin: 0 0 15px 0; font-size: 20px; color: #ecf0f1;">
-            L'équipe ALPHA-NEW COACHING
-          </h3>
-          <p style="margin: 0; font-size: 14px; color: #bdc3c7;">
-            Votre partenaire pour l'excellence professionnelle
-          </p>
-        </div>
+        ${getEmailFooter()}
       </div>
     </body>
     </html>
@@ -287,13 +318,7 @@ const getCoacheeRequestRejectedEmailTemplate = (coacheeName, coachName, response
     <body style="margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f8f9fa;">
       <div style="max-width: 600px; margin: 0 auto; background-color: #ffffff; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
         
-        <!-- Header -->
-        <div style="background: linear-gradient(135deg, #ffc107 0%, #fd7e14 100%); padding: 30px 20px; text-align: center;">
-          <img src="https://alphanew.coach/assets/logo.png" alt="ALPHA-NEW COACHING Logo" style="max-width: 200px; height: auto; margin-bottom: 15px;">
-          <h1 style="color: #ffffff; margin: 0; font-size: 28px; font-weight: 700; text-shadow: 0 2px 4px rgba(0,0,0,0.3);">
-            📋 Réponse à votre Demande
-          </h1>
-        </div>
+        ${getEmailHeader("Réponse à votre Demande", "📋")}
         
         <!-- Main Content -->
         <div style="padding: 40px 30px;">
@@ -343,15 +368,65 @@ const getCoacheeRequestRejectedEmailTemplate = (coacheeName, coachName, response
           </div>
         </div>
         
-        <!-- Footer -->
-        <div style="background-color: #02093d; color: #ffffff; padding: 30px 20px; text-align: center;">
-          <h3 style="margin: 0 0 15px 0; font-size: 20px; color: #ecf0f1;">
-            L'équipe ALPHA-NEW COACHING
-          </h3>
-          <p style="margin: 0; font-size: 14px; color: #bdc3c7;">
-            Votre partenaire pour l'excellence professionnelle
+        ${getEmailFooter()}
+      </div>
+    </body>
+    </html>
+  `;
+};
+
+// Email template for cancellation notification
+const getCancellationEmailTemplate = (coachName, coacheeName) => {
+  return `
+    <!DOCTYPE html>
+    <html lang="fr">
+    <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>Demande annulée - ALPHA-NEW COACHING</title>
+    </head>
+    <body style="margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f8f9fa;">
+      <div style="max-width: 600px; margin: 0 auto; background-color: #ffffff; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
+        
+        ${getEmailHeader("Demande Annulée", "❌")}
+        
+        <!-- Main Content -->
+        <div style="padding: 40px 30px;">
+          <h2 style="color: #333333; margin-bottom: 20px; font-size: 24px; font-weight: 600;">
+            Bonjour ${coachName} ! 👋
+          </h2>
+          
+          <p style="color: #555555; font-size: 16px; line-height: 1.6; margin-bottom: 20px;">
+            Nous vous informons que la demande de coaching de <strong>${coacheeName}</strong> a été annulée.
           </p>
+          
+          <!-- Information -->
+          <div style="background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%); padding: 25px; border-radius: 15px; margin: 25px 0; border-left: 5px solid #dc3545;">
+            <h3 style="color: #721c24; margin: 0 0 15px 0; font-size: 18px;">
+              📝 Information :
+            </h3>
+            <p style="color: #721c24; margin: 0; font-size: 16px; line-height: 1.5;">
+              Cette demande n'apparaîtra plus dans votre tableau de bord. Aucune action n'est requise de votre part.
+            </p>
+          </div>
+          
+          <div style="text-align: center; margin: 30px 0;">
+            <a href="https://alphanew.coach/coach-dashboard" 
+               style="background: linear-gradient(135deg, #38b6ff 0%, #02093d 100%); 
+                      color: #ffffff; 
+                      text-decoration: none; 
+                      padding: 15px 30px; 
+                      border-radius: 25px; 
+                      font-weight: 600; 
+                      font-size: 16px; 
+                      display: inline-block; 
+                      box-shadow: 0 4px 15px rgba(56, 182, 255, 0.4);">
+              📊 Voir mon Tableau de Bord
+            </a>
+          </div>
         </div>
+        
+        ${getEmailFooter()}
       </div>
     </body>
     </html>
@@ -654,15 +729,11 @@ exports.cancelCoachingRequest = async (req, res) => {
 
     await CoachingRequest.findByIdAndDelete(requestId);
 
-    // Optionally send cancellation email to coach
+    // Send cancellation email to coach
     await sendEmail(
       request.coach.email,
       "❌ Demande de coaching annulée - ALPHA-NEW COACHING",
-      `
-        <p>Bonjour ${request.coach.name},</p>
-        <p>La demande de coaching de <strong>${request.coachee.name}</strong> a été annulée.</p>
-        <p>Cordialement,<br>L'équipe ALPHA-NEW COACHING</p>
-      `
+      getCancellationEmailTemplate(request.coach.name, request.coachee.name)
     );
 
     return res.status(200).json({
