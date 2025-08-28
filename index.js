@@ -10,8 +10,16 @@ require("dotenv").config();
 
 // app middlewares
 const app = express();
-app.use(express.json());
-app.use(cors({
+
+// Trust proxy for production
+if (process.env.NODE_ENV === 'production') {
+  app.set('trust proxy', 1);
+}
+
+app.use(express.json({ limit: '10mb' }));
+
+// Production-ready CORS configuration
+const corsOptions = {
   origin: [
     'https://alphanew.coach',
     'http://localhost:3000',
@@ -22,9 +30,29 @@ app.use(cors({
     'https://localhost:3000',
     'https://localhost:3001'
   ],
-  credentials: true
-}));
-app.use(morgan("dev"));
+  credentials: true,
+  optionsSuccessStatus: 200,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
+};
+
+app.use(cors(corsOptions));
+
+// Security headers for production
+if (process.env.NODE_ENV === 'production') {
+  app.use((req, res, next) => {
+    res.setHeader('X-Content-Type-Options', 'nosniff');
+    res.setHeader('X-Frame-Options', 'DENY');
+    res.setHeader('X-XSS-Protection', '1; mode=block');
+    res.setHeader('Strict-Transport-Security', 'max-age=31536000; includeSubDomains');
+    res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
+    next();
+  });
+}
+
+// Logging - production vs development
+const logFormat = process.env.NODE_ENV === 'production' ? 'combined' : 'dev';
+app.use(morgan(logFormat));
 
 // Static file serving for uploads
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
@@ -34,9 +62,12 @@ const HTTP_PORT = process.env.HTTP_PORT || 4000;
 const HTTPS_PORT = process.env.HTTPS_PORT || 4443;
 
 // SSL Certificate configuration
+const sslKeyPath = process.env.SSL_KEY_PATH || 'ssl/server.key';
+const sslCertPath = process.env.SSL_CERT_PATH || 'ssl/server.crt';
+
 const sslOptions = {
-  key: fs.readFileSync(path.join(__dirname, 'ssl', 'server.key')),
-  cert: fs.readFileSync(path.join(__dirname, 'ssl', 'server.crt'))
+  key: fs.readFileSync(path.join(__dirname, sslKeyPath)),
+  cert: fs.readFileSync(path.join(__dirname, sslCertPath))
 };
 
 // routes

@@ -15,7 +15,10 @@ module.exports = {
       env_production: {
         NODE_ENV: 'production',
         HTTP_PORT: 4000,
-        HTTPS_PORT: 4443
+        HTTPS_PORT: 4443,
+        SSL_KEY_PATH: 'ssl/server-prod.key',
+        SSL_CERT_PATH: 'ssl/server-prod.crt',
+        TRUST_PROXY: 'true'
       },
       env_staging: {
         NODE_ENV: 'staging',
