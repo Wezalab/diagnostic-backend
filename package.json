@@ -5,6 +5,8 @@
   "main": "index.js",
   "scripts": {
     "start": "nodemon index.js",
+    "check-sharp": "node check-sharp.js",
+    "fix-sharp": "npm uninstall sharp && npm install --platform=linux --arch=x64 sharp",
     "pm2:start": "pm2 start ecosystem.config.js",
     "pm2:start:prod": "pm2 start ecosystem.config.js --env production",
     "pm2:start:staging": "pm2 start ecosystem.config.js --env staging",

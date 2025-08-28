@@ -15,6 +15,20 @@ if ! command -v pm2 &> /dev/null; then
     npm install -g pm2
 fi
 
+# Install system dependencies for Sharp on Ubuntu
+echo -e "${YELLOW}Installing system dependencies for Sharp...${NC}"
+if command -v apt-get &> /dev/null; then
+    # Update package list
+    apt-get update -qq
+    
+    # Install required packages for Sharp/libvips
+    apt-get install -y -qq libvips-dev libvips42 pkg-config
+    
+    echo -e "${GREEN}✅ System dependencies installed${NC}"
+else
+    echo -e "${YELLOW}⚠️  apt-get not found, skipping system dependency installation${NC}"
+fi
+
 # Create necessary directories
 echo -e "${YELLOW}Creating directories...${NC}"
 mkdir -p logs
@@ -38,6 +52,34 @@ fi
 # Install production dependencies
 echo -e "${YELLOW}Installing production dependencies...${NC}"
 npm install --production
+
+# Fix Sharp for Ubuntu platform
+echo -e "${YELLOW}Fixing Sharp for Ubuntu platform...${NC}"
+
+# Remove existing Sharp installation
+npm uninstall sharp
+
+# Install Sharp with platform-specific options for Ubuntu
+echo -e "${YELLOW}Installing Sharp for Linux platform...${NC}"
+npm install --platform=linux --arch=x64 sharp
+
+# Verify Sharp installation
+echo -e "${YELLOW}Verifying Sharp installation...${NC}"
+if node -e "require('sharp'); console.log('Sharp loaded successfully');" 2>/dev/null; then
+    echo -e "${GREEN}✅ Sharp installed and working correctly${NC}"
+else
+    echo -e "${RED}❌ Sharp installation failed, trying alternative method...${NC}"
+    
+    # Alternative installation method
+    npm install --include=optional sharp
+    
+    if node -e "require('sharp'); console.log('Sharp loaded successfully');" 2>/dev/null; then
+        echo -e "${GREEN}✅ Sharp installed successfully with alternative method${NC}"
+    else
+        echo -e "${RED}❌ Sharp installation failed completely${NC}"
+        echo -e "${YELLOW}Continuing deployment without Sharp - image processing will be disabled${NC}"
+    fi
+fi
 
 # Stop existing PM2 processes
 echo -e "${YELLOW}Stopping existing processes...${NC}"

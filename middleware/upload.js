@@ -1,8 +1,19 @@
 const multer = require('multer');
-const sharp = require('sharp');
 const path = require('path');
 const fs = require('fs');
 const { v4: uuidv4 } = require('uuid');
+
+// Try to load Sharp with error handling
+let sharp;
+let sharpAvailable = false;
+try {
+  sharp = require('sharp');
+  sharpAvailable = true;
+  console.log('✅ Sharp loaded successfully');
+} catch (error) {
+  console.warn('⚠️  Sharp not available - image processing will be disabled:', error.message);
+  sharpAvailable = false;
+}
 
 // Ensure upload directories exist
 const ensureUploadDir = (dir) => {
@@ -95,44 +106,50 @@ const processImage = async (req, res, next) => {
           originalPath,
           processedPath,
           originalExtension,
-          exists: fs.existsSync(originalPath)
+          exists: fs.existsSync(originalPath),
+          sharpAvailable
         });
         
-        try {
-          // Process image with Sharp, keeping original format
-          let sharpInstance = sharp(originalPath)
-            .resize(1200, 1200, {
-              fit: 'inside',
-              withoutEnlargement: true
-            });
+        // Only process with Sharp if it's available
+        if (sharpAvailable) {
+          try {
+            // Process image with Sharp, keeping original format
+            let sharpInstance = sharp(originalPath)
+              .resize(1200, 1200, {
+                fit: 'inside',
+                withoutEnlargement: true
+              });
 
-          // Apply format-specific optimization while preserving format
-          if (originalExtension.toLowerCase() === '.jpg' || originalExtension.toLowerCase() === '.jpeg') {
-            sharpInstance = sharpInstance.jpeg({ quality: 85, progressive: true });
-          } else if (originalExtension.toLowerCase() === '.png') {
-            sharpInstance = sharpInstance.png({ quality: 85, progressive: true });
-          } else if (originalExtension.toLowerCase() === '.webp') {
-            sharpInstance = sharpInstance.webp({ quality: 85 });
+            // Apply format-specific optimization while preserving format
+            if (originalExtension.toLowerCase() === '.jpg' || originalExtension.toLowerCase() === '.jpeg') {
+              sharpInstance = sharpInstance.jpeg({ quality: 85, progressive: true });
+            } else if (originalExtension.toLowerCase() === '.png') {
+              sharpInstance = sharpInstance.png({ quality: 85, progressive: true });
+            } else if (originalExtension.toLowerCase() === '.webp') {
+              sharpInstance = sharpInstance.webp({ quality: 85 });
+            }
+            // For other formats, Sharp will auto-detect and preserve
+
+            await sharpInstance.toFile(processedPath);
+
+            // Verify processed file was created
+            if (fs.existsSync(processedPath)) {
+              // Replace original file with processed version
+              fs.unlinkSync(originalPath);
+              fs.renameSync(processedPath, originalPath);
+              
+              console.log('Image processed successfully with Sharp, kept original extension:', file.filename);
+            } else {
+              console.error('Processed file was not created:', processedPath);
+              // Keep original file if processing failed
+            }
+          } catch (sharpError) {
+            console.error('Sharp processing failed:', sharpError);
+            // Keep original file if Sharp processing fails
+            console.log('Keeping original image without processing due to Sharp error');
           }
-          // For other formats, Sharp will auto-detect and preserve
-
-          await sharpInstance.toFile(processedPath);
-
-          // Verify processed file was created
-          if (fs.existsSync(processedPath)) {
-            // Replace original file with processed version
-            fs.unlinkSync(originalPath);
-            fs.renameSync(processedPath, originalPath);
-            
-            console.log('Image processed successfully, kept original extension:', file.filename);
-          } else {
-            console.error('Processed file was not created:', processedPath);
-            // Keep original file if processing failed
-          }
-        } catch (sharpError) {
-          console.error('Sharp processing failed:', sharpError);
-          // Keep original file if Sharp processing fails
-          // Don't modify filename if processing failed
+        } else {
+          console.log('Sharp not available - keeping original image without processing:', file.filename);
         }
         
         processedFiles.push(file);
