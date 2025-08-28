@@ -35,18 +35,40 @@ mkdir -p logs
 mkdir -p pids
 mkdir -p uploads/{profiles,covers,attachments,temp}
 
-# Set proper permissions for SSL certificates
-echo -e "${YELLOW}Setting SSL certificate permissions...${NC}"
-chmod 600 ssl/server-prod.key
-chmod 644 ssl/server-prod.crt
-
-# Verify SSL certificates
-echo -e "${YELLOW}Verifying SSL certificates...${NC}"
-if openssl x509 -in ssl/server-prod.crt -text -noout > /dev/null 2>&1; then
-    echo -e "${GREEN}✅ SSL certificate is valid${NC}"
+# Check and generate SSL certificates if needed
+echo -e "${YELLOW}Checking SSL certificates...${NC}"
+if [ ! -f "ssl/server-prod.key" ] || [ ! -f "ssl/server-prod.crt" ]; then
+    echo -e "${YELLOW}⚠️  SSL certificates not found. Generating self-signed certificates...${NC}"
+    
+    # Make sure the SSL generation script is executable
+    chmod +x generate-ssl-cert.sh
+    
+    # Generate SSL certificates
+    ./generate-ssl-cert.sh
+    
+    if [ $? -eq 0 ]; then
+        echo -e "${GREEN}✅ SSL certificates generated successfully${NC}"
+    else
+        echo -e "${RED}❌ Failed to generate SSL certificates${NC}"
+        exit 1
+    fi
 else
-    echo -e "${RED}❌ SSL certificate is invalid${NC}"
-    exit 1
+    # Verify existing SSL certificates
+    echo -e "${YELLOW}Verifying existing SSL certificates...${NC}"
+    if openssl x509 -in ssl/server-prod.crt -text -noout > /dev/null 2>&1; then
+        echo -e "${GREEN}✅ SSL certificate is valid${NC}"
+        
+        # Check if certificate is expiring soon (within 30 days)
+        if openssl x509 -checkend 2592000 -noout -in ssl/server-prod.crt; then
+            echo -e "${GREEN}✅ SSL certificate is not expiring soon${NC}"
+        else
+            echo -e "${YELLOW}⚠️  SSL certificate expires within 30 days${NC}"
+            echo -e "${YELLOW}   Consider renewing with: sudo ./setup-letsencrypt.sh${NC}"
+        fi
+    else
+        echo -e "${RED}❌ SSL certificate is invalid, regenerating...${NC}"
+        ./generate-ssl-cert.sh
+    fi
 fi
 
 # Install production dependencies
