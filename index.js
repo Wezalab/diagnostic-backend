@@ -27,6 +27,8 @@ const corsOptions = {
     'http://46.202.168.1:3000',
     'https://46.202.168.1:4443',
     'https://46.202.168.1:3000',
+    'https://46.202.168.1',      // Nginx reverse proxy
+    'http://46.202.168.1',       // Direct HTTP access
     'https://localhost:3000',
     'https://localhost:3001'
   ],
@@ -116,10 +118,15 @@ httpServer.listen(HTTP_PORT, async () => {
   await connectToDatabase();
 });
 
-// Create HTTPS server
-const httpsServer = https.createServer(sslOptions, app);
-httpsServer.listen(HTTPS_PORT, () => {
-  console.log(`🔒 HTTPS Server listening on port ${HTTPS_PORT}`);
-  console.log(`🔐 HTTPS URL: https://46.202.168.1:${HTTPS_PORT}`);
-  console.log(`✅ SSL Certificate loaded successfully`);
-});
+// Create HTTPS server only if not disabled (when behind reverse proxy)
+if (process.env.HTTPS_DISABLED !== 'true') {
+  const httpsServer = https.createServer(sslOptions, app);
+  httpsServer.listen(HTTPS_PORT, () => {
+    console.log(`🔒 HTTPS Server listening on port ${HTTPS_PORT}`);
+    console.log(`🔐 HTTPS URL: https://46.202.168.1:${HTTPS_PORT}`);
+    console.log(`✅ SSL Certificate loaded successfully`);
+  });
+} else {
+  console.log(`🌐 HTTPS disabled - running behind reverse proxy (Nginx)`);
+  console.log(`🔒 SSL termination handled by reverse proxy`);
+}
