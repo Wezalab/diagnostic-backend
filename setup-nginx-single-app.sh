@@ -134,7 +134,7 @@ server {
     gzip on;
     gzip_vary on;
     gzip_min_length 10240;
-    gzip_proxied expired no-cache no-store private must-revalidate auth;
+    gzip_proxied expired no-cache no-store private auth;
     gzip_types text/plain text/css text/xml text/javascript application/javascript application/xml+rss application/json;
 
     # Client upload size limit
