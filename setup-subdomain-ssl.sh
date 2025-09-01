@@ -1,7 +1,7 @@
 #!/bin/bash
 
-# Nginx + Let's Encrypt Setup Script for Diagnostic Backend
-echo "🌐 Setting up Nginx reverse proxy with Let's Encrypt SSL..."
+# Setup SSL for api.alphanew.coach subdomain
+echo "🌐 Setting up SSL for api.alphanew.coach..."
 
 # Colors for output
 RED='\033[0;31m'
@@ -10,23 +10,19 @@ YELLOW='\033[1;33m'
 BLUE='\033[0;34m'
 NC='\033[0m' # No Color
 
-# Configuration - UPDATE THESE VALUES
-DOMAIN="api.alphanew.coach"       # Your API subdomain
-EMAIL="admin@alphanew.coach"      # Replace with your email
+# Configuration
+DOMAIN="api.alphanew.coach"
+EMAIL="admin@alphanew.coach"  # Update with your actual email
 SERVER_IP="46.202.168.1"
 BACKEND_PORT="4000"
 PROJECT_DIR="/var/www/diagnostic-backend"
 
-echo -e "${YELLOW}⚠️  IMPORTANT: Update DOMAIN and EMAIL variables in this script!${NC}"
-echo -e "${YELLOW}   Current domain: $DOMAIN${NC}"
-echo -e "${YELLOW}   Current email: $EMAIL${NC}"
+echo -e "${YELLOW}📋 Configuration:${NC}"
+echo -e "  🌐 Domain: $DOMAIN"
+echo -e "  📧 Email: $EMAIL"
+echo -e "  🖥️  Server IP: $SERVER_IP"
+echo -e "  🔌 Backend Port: $BACKEND_PORT"
 echo ""
-
-# Check if domain is set properly
-if [ "$DOMAIN" = "yourdomain.com" ]; then
-    echo -e "${RED}❌ Please update the DOMAIN and EMAIL variables in this script${NC}"
-    exit 1
-fi
 
 # Check if running as root
 if [ "$EUID" -ne 0 ]; then
@@ -34,29 +30,26 @@ if [ "$EUID" -ne 0 ]; then
     exit 1
 fi
 
-echo -e "${BLUE}1. Installing Nginx and Certbot...${NC}"
-# Install required packages
+echo -e "${BLUE}1. Installing required packages...${NC}"
 apt-get update -qq
 apt-get install -y nginx certbot python3-certbot-nginx openssl
 
-# Stop nginx and any conflicting services
-systemctl stop nginx
+echo -e "${BLUE}2. Stopping services...${NC}"
+systemctl stop nginx 2>/dev/null || true
 systemctl stop apache2 2>/dev/null || true
-pm2 stop diagnostic-backend 2>/dev/null || true
 
-echo -e "${BLUE}2. Creating project directory...${NC}"
+echo -e "${BLUE}3. Creating project directory...${NC}"
 mkdir -p "$PROJECT_DIR"
 mkdir -p "$PROJECT_DIR/uploads"
 
-echo -e "${BLUE}3. Creating temporary Nginx configuration...${NC}"
-# Create temporary nginx config for domain verification
+echo -e "${BLUE}4. Creating temporary Nginx config for domain verification...${NC}"
 cat > /etc/nginx/sites-available/diagnostic-backend-temp << EOF
 server {
     listen 80;
     server_name $DOMAIN;
     
     location / {
-        return 200 'Domain verification for Let\'s Encrypt';
+        return 200 'Domain verification for api.alphanew.coach';
         add_header Content-Type text/plain;
     }
 }
@@ -66,11 +59,10 @@ EOF
 ln -sf /etc/nginx/sites-available/diagnostic-backend-temp /etc/nginx/sites-enabled/diagnostic-backend-temp
 rm -f /etc/nginx/sites-enabled/default
 
-# Start nginx for domain verification
+echo -e "${BLUE}5. Starting Nginx for domain verification...${NC}"
 systemctl start nginx
 
-echo -e "${BLUE}4. Obtaining Let's Encrypt certificate...${NC}"
-# Get Let's Encrypt certificate
+echo -e "${BLUE}6. Obtaining Let's Encrypt certificate for $DOMAIN...${NC}"
 certbot certonly --nginx \
     --non-interactive \
     --agree-tos \
@@ -80,13 +72,16 @@ certbot certonly --nginx \
 # Check if certificate was obtained
 if [ ! -f "/etc/letsencrypt/live/$DOMAIN/fullchain.pem" ]; then
     echo -e "${RED}❌ Let's Encrypt certificate generation failed${NC}"
+    echo -e "${YELLOW}💡 Make sure:${NC}"
+    echo -e "   1. DNS A record for api.alphanew.coach points to $SERVER_IP"
+    echo -e "   2. Port 80 is open and accessible"
+    echo -e "   3. Domain is propagated (check with: dig api.alphanew.coach)"
     exit 1
 fi
 
 echo -e "${GREEN}✅ Let's Encrypt certificate obtained successfully!${NC}"
 
-echo -e "${BLUE}5. Creating production Nginx configuration...${NC}"
-# Create production nginx configuration with Let's Encrypt certificates
+echo -e "${BLUE}7. Creating production Nginx configuration...${NC}"
 cat > /etc/nginx/sites-available/diagnostic-backend << EOF
 # Redirect HTTP to HTTPS
 server {
@@ -120,6 +115,12 @@ server {
     add_header X-XSS-Protection "1; mode=block";
     add_header Referrer-Policy "strict-origin-when-cross-origin";
 
+    # CORS Headers for API
+    add_header Access-Control-Allow-Origin "https://alphanew.coach" always;
+    add_header Access-Control-Allow-Methods "GET, POST, PUT, DELETE, OPTIONS" always;
+    add_header Access-Control-Allow-Headers "Accept, Authorization, Cache-Control, Content-Type, DNT, If-Modified-Since, Keep-Alive, Origin, User-Agent, X-Requested-With" always;
+    add_header Access-Control-Allow-Credentials true always;
+
     # Gzip Compression
     gzip on;
     gzip_vary on;
@@ -134,12 +135,13 @@ server {
     access_log /var/log/nginx/diagnostic-backend.access.log;
     error_log /var/log/nginx/diagnostic-backend.error.log;
 
-    # Serve static files directly
+    # Serve static files (uploads)
     location /uploads/ {
         alias $PROJECT_DIR/uploads/;
         expires 1y;
         add_header Cache-Control "public, immutable";
         
+        # Security for uploads
         location ~* \.(php|pl|py|jsp|asp|sh|cgi)\$ {
             deny all;
         }
@@ -148,6 +150,8 @@ server {
     # Main API proxy to Node.js backend
     location / {
         proxy_pass http://127.0.0.1:$BACKEND_PORT;
+        
+        # Proxy headers
         proxy_http_version 1.1;
         proxy_set_header Upgrade \$http_upgrade;
         proxy_set_header Connection 'upgrade';
@@ -158,13 +162,14 @@ server {
         proxy_set_header X-Forwarded-Host \$host;
         proxy_set_header X-Forwarded-Port \$server_port;
         
+        # Proxy timeouts
         proxy_connect_timeout 60s;
         proxy_send_timeout 60s;
         proxy_read_timeout 60s;
         proxy_cache_bypass \$http_upgrade;
     }
 
-    # Health check
+    # Health check endpoint
     location /health {
         proxy_pass http://127.0.0.1:$BACKEND_PORT/test;
         access_log off;
@@ -172,66 +177,35 @@ server {
 }
 EOF
 
-# Remove temporary config and enable production config
+echo -e "${BLUE}8. Enabling new configuration...${NC}"
+# Remove temporary config
 rm -f /etc/nginx/sites-enabled/diagnostic-backend-temp
+
+# Enable production config
 ln -sf /etc/nginx/sites-available/diagnostic-backend /etc/nginx/sites-enabled/diagnostic-backend
 
-echo -e "${BLUE}6. Testing Nginx configuration...${NC}"
-if nginx -t; then
+echo -e "${BLUE}9. Testing Nginx configuration...${NC}"
+nginx -t
+
+if [ $? -eq 0 ]; then
     echo -e "${GREEN}✅ Nginx configuration is valid${NC}"
+    
+    echo -e "${BLUE}10. Restarting Nginx...${NC}"
+    systemctl restart nginx
+    systemctl enable nginx
+    
+    echo -e "${GREEN}🎉 Setup complete!${NC}"
+    echo ""
+    echo -e "${YELLOW}📋 Next steps:${NC}"
+    echo -e "  1. Make sure your Node.js app is running on port $BACKEND_PORT"
+    echo -e "  2. Test your API: https://$DOMAIN/health"
+    echo -e "  3. Update your frontend to use: https://$DOMAIN"
+    echo ""
+    echo -e "${YELLOW}🔄 Certificate auto-renewal:${NC}"
+    echo -e "  Certbot has been configured to auto-renew your certificate."
+    echo -e "  Test renewal: sudo certbot renew --dry-run"
+    
 else
     echo -e "${RED}❌ Nginx configuration error${NC}"
     exit 1
 fi
-
-echo -e "${BLUE}7. Setting up automatic certificate renewal...${NC}"
-# Setup automatic renewal
-cat > /etc/cron.d/letsencrypt-diagnostic-backend << EOF
-# Auto-renew Let's Encrypt certificate for diagnostic-backend
-0 2 * * * root certbot renew --quiet --deploy-hook "systemctl reload nginx"
-EOF
-
-echo -e "${BLUE}8. Configuring firewall...${NC}"
-if command -v ufw &> /dev/null; then
-    ufw allow 80/tcp
-    ufw allow 443/tcp
-    echo -e "${GREEN}✅ Firewall configured${NC}"
-fi
-
-echo -e "${BLUE}9. Starting services...${NC}"
-# Start nginx
-systemctl restart nginx
-systemctl enable nginx
-
-if systemctl is-active --quiet nginx; then
-    echo -e "${GREEN}✅ Nginx started successfully${NC}"
-else
-    echo -e "${RED}❌ Failed to start Nginx${NC}"
-    exit 1
-fi
-
-echo -e "${GREEN}🎉 Nginx + Let's Encrypt setup completed!${NC}"
-
-echo -e "${YELLOW}📋 Configuration Summary:${NC}"
-echo -e "  🌐 Domain: $DOMAIN"
-echo -e "  🔒 SSL: Let's Encrypt (trusted by all browsers)"
-echo -e "  ⚡ Backend: HTTP on port $BACKEND_PORT (internal)"
-echo -e "  🔄 Auto-renewal: Configured via cron"
-
-echo -e "${YELLOW}🔗 Access URLs:${NC}"
-echo -e "  📱 Production API: https://$DOMAIN"
-echo -e "  🔍 Backend test: https://$DOMAIN/test"
-
-echo -e "${YELLOW}📝 Next Steps:${NC}"
-echo -e "  1. Deploy your code to: $PROJECT_DIR"
-echo -e "  2. Set HTTPS_DISABLED=true in your backend environment"
-echo -e "  3. Start backend: pm2 start ecosystem.config.js --env production"
-echo -e "  4. Update frontend to use: https://$DOMAIN"
-
-echo -e "${YELLOW}🔧 Useful Commands:${NC}"
-echo -e "  • Test SSL: curl https://$DOMAIN/test"
-echo -e "  • Check cert: certbot certificates"
-echo -e "  • Renew cert: certbot renew --dry-run"
-echo -e "  • Nginx logs: tail -f /var/log/nginx/diagnostic-backend.error.log"
-
-echo -e "${GREEN}✅ Your API is now accessible with a trusted SSL certificate!${NC}"
