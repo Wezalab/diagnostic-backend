@@ -11,6 +11,7 @@
     "ssl:letsencrypt": "sudo ./setup-letsencrypt.sh",
     "ssl:check": "openssl x509 -in ssl/server-prod.crt -text -noout | grep -E 'Subject:|Not Before:|Not After:'",
     "nginx:setup": "sudo ./setup-nginx.sh",
+    "nginx:single": "sudo ./setup-nginx-single-app.sh",
     "nginx:letsencrypt": "sudo ./setup-nginx-letsencrypt.sh",
     "nginx:status": "sudo systemctl status nginx",
     "nginx:restart": "sudo systemctl restart nginx",
