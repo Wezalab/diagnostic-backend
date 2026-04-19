@@ -3,10 +3,10 @@ const mongoose = require("mongoose");
 const costLineSchema = new mongoose.Schema(
   {
     id: { type: String, required: true },
-    name: { type: String, required: true },
-    unit: { type: String, required: true },
-    quantity: { type: Number, required: true },
-    unitPrice: { type: Number, required: true },
+    name: String,
+    unit: String,
+    quantity: Number,
+    unitPrice: Number,
   },
   { _id: false }
 );
@@ -14,12 +14,12 @@ const costLineSchema = new mongoose.Schema(
 const fixedCostSchema = new mongoose.Schema(
   {
     id: { type: String, required: true },
-    name: { type: String, required: true },
-    unit: { type: String, required: true },
-    quantity: { type: Number, required: true },
-    unitPrice: { type: Number, required: true },
-    periodOfUse: { type: Number },
-    resaleValue: { type: Number },
+    name: String,
+    unit: String,
+    quantity: Number,
+    unitPrice: Number,
+    periodOfUse: Number,
+    resaleValue: Number,
   },
   { _id: false }
 );
@@ -27,43 +27,41 @@ const fixedCostSchema = new mongoose.Schema(
 const revenueItemSchema = new mongoose.Schema(
   {
     id: { type: String, required: true },
-    name: { type: String, required: true },
-    unit: { type: String, required: true },
-    quantity: { type: Number, required: true },
-    unitPrice: { type: Number, required: true },
+    name: String,
+    unit: String,
+    quantity: Number,
+    unitPrice: Number,
     type: { type: String, enum: ["product", "by-product"], required: true },
   },
   { _id: false }
 );
 
-const financeSheetSchema = new mongoose.Schema(
+const financialSheetSchema = new mongoose.Schema(
   {
     userId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       required: true,
-      index: true,
     },
     ventureId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Venture",
       required: true,
-      index: true,
     },
-    currency: { type: String, required: true, maxlength: 5, trim: true },
-    exchangeRate: { type: Number, required: true },
-    fixedCosts: { type: [fixedCostSchema], default: [] },
+    currency: { type: String, required: true, maxlength: 5 },
+    exchangeRate: { type: Number, required: true, min: 0 },
+    fixedCosts: [fixedCostSchema],
     variableCosts: {
-      inputsServices: { type: [costLineSchema], default: [] },
-      labour: { type: [costLineSchema], default: [] },
+      inputsServices: [costLineSchema],
+      labour: [costLineSchema],
     },
-    revenueItems: { type: [revenueItemSchema], default: [] },
+    revenueItems: [revenueItemSchema],
   },
   { timestamps: true }
 );
 
-financeSheetSchema.index({ userId: 1, ventureId: 1 }, { unique: true });
+financialSheetSchema.index({ userId: 1, ventureId: 1 }, { unique: true });
 
-const FinanceSheet = mongoose.model("FinanceSheet", financeSheetSchema);
+const FinanceSheet = mongoose.model("FinanceSheet", financialSheetSchema);
 
 module.exports = FinanceSheet;
