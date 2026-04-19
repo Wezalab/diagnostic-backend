@@ -81,6 +81,7 @@ app.use("/api/projects", require("./routes/project-routes"));
 app.use("/api/entreprises", require("./routes/entreprise-routes"));
 app.use("/api/business-canevas", require("./routes/business-canevas-routes"));
 app.use("/api/bmc", require("./routes/bmc-routes"));
+app.use("/api/finance", require("./routes/finance-routes"));
 
 app.use("/api/coaching", require("./routes/coaching-routes"));
 app.use("/api/session", require("./routes/session-routes"));
