@@ -1,67 +1,62 @@
 const mongoose = require("mongoose");
+const { Schema } = mongoose;
 
-const costLineSchema = new mongoose.Schema(
+const costItemSchema = new Schema(
   {
     id: { type: String, required: true },
-    name: String,
-    unit: String,
-    quantity: Number,
-    unitPrice: Number,
+    name: { type: String, default: "" },
+    unit: { type: String, default: "" },
+    quantity: { type: Number, default: 0 },
+    unitPrice: { type: Number, default: 0 },
+    periodOfUse: { type: Number },
+    resaleValue: { type: Number },
   },
   { _id: false }
 );
 
-const fixedCostSchema = new mongoose.Schema(
+const labourItemSchema = new Schema(
   {
     id: { type: String, required: true },
-    name: String,
-    unit: String,
-    quantity: Number,
-    unitPrice: Number,
-    periodOfUse: Number,
-    resaleValue: Number,
+    name: { type: String, default: "" },
+    unit: { type: String, default: "" },
+    quantity: { type: Number, default: 0 },
+    unitPrice: { type: Number, default: 0 },
   },
   { _id: false }
 );
 
-const revenueItemSchema = new mongoose.Schema(
+const revenueItemSchema = new Schema(
   {
     id: { type: String, required: true },
-    name: String,
-    unit: String,
-    quantity: Number,
-    unitPrice: Number,
+    name: { type: String, default: "" },
+    unit: { type: String, default: "" },
+    quantity: { type: Number, default: 0 },
+    unitPrice: { type: Number, default: 0 },
     type: { type: String, enum: ["product", "by-product"], required: true },
   },
   { _id: false }
 );
 
-const financialSheetSchema = new mongoose.Schema(
+const financialSheetSchema = new Schema(
   {
-    userId: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
-      required: true,
-    },
-    ventureId: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Venture",
-      required: true,
-    },
+    userId: { type: Schema.Types.ObjectId, ref: "User", required: true },
+    ventureId: { type: Schema.Types.ObjectId, ref: "Venture", required: true },
     currency: { type: String, required: true, maxlength: 5 },
     exchangeRate: { type: Number, required: true, min: 0 },
-    fixedCosts: [fixedCostSchema],
+    fixedCosts: { type: [costItemSchema], default: [] },
     variableCosts: {
-      inputsServices: [costLineSchema],
-      labour: [costLineSchema],
+      inputsServices: { type: [costItemSchema], default: [] },
+      labour: { type: [labourItemSchema], default: [] },
     },
-    revenueItems: [revenueItemSchema],
+    revenueItems: { type: [revenueItemSchema], default: [] },
   },
   { timestamps: true }
 );
 
 financialSheetSchema.index({ userId: 1, ventureId: 1 }, { unique: true });
 
-const FinanceSheet = mongoose.model("FinanceSheet", financialSheetSchema);
-
-module.exports = FinanceSheet;
+module.exports = mongoose.model(
+  "FinancialSheet",
+  financialSheetSchema,
+  "financesheets"
+);
