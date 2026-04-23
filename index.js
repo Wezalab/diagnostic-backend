@@ -22,6 +22,8 @@ app.use(express.json({ limit: '10mb' }));
 const corsOptions = {
   origin: [
     'https://alphanew.coach',
+    'https://bomoko.fund',
+    'https://www.bomoko.fund',
     'http://localhost:3000',
     'http://localhost:3001',
     'http://46.202.168.1:3000',
@@ -76,7 +78,9 @@ const sslOptions = {
 app.use("/test", (req, res) =>
   res.json("diagnostic api responding successfully ...")
 );
-app.use("/auth", require("./routes/auth-routes"));
+const authRoutes = require("./routes/auth-routes");
+app.use("/auth", authRoutes);
+app.use("/api/auth", authRoutes);
 app.use("/api/projects", require("./routes/project-routes"));
 app.use("/api/entreprises", require("./routes/entreprise-routes"));
 app.use("/api/business-canevas", require("./routes/business-canevas-routes"));
