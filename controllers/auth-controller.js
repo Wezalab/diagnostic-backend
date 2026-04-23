@@ -421,6 +421,28 @@ exports.loginGoogle = async (req, res) => {
   }
 };
 
+/** Google Identity Services often posts `credential` (JWT) only; normalize then reuse loginGoogle. */
+exports.exchangeGoogleToken = async (req, res) => {
+  const idToken = req.body.idToken || req.body.credential || req.body.token;
+  if (!idToken) {
+    return res.status(400).json({
+      message: 'Missing Google id token (send idToken, credential, or token)'
+    });
+  }
+  const verification = await verifyGoogleToken(idToken);
+  if (!verification.isValid) {
+    return res.status(401).json({
+      message: 'Invalid Google token',
+      error: verification.error
+    });
+  }
+  req.body.idToken = idToken;
+  req.body.email = req.body.email || verification.user.email;
+  req.body.name = req.body.name || verification.user.name;
+  req.body.imageUrl = req.body.imageUrl || verification.user.picture;
+  return exports.loginGoogle(req, res);
+};
+
 exports.registerGoogle = async (req, res) => {
   try {
     const { email, name, imageUrl, idToken, role, project, detailsOfProject } = req.body;
