@@ -12,6 +12,7 @@ const {
   update,
   loginGoogle,
   registerGoogle,
+  exchangeGoogleToken,
   testEmail
 } = require("../controllers/auth-controller");
 
@@ -19,6 +20,7 @@ router.post("/signup", signup);
 router.post("/login", login);
 router.post("/login-google", loginGoogle);
 router.post("/register-google", registerGoogle);
+router.post("/exchange-google-token", exchangeGoogleToken);
 
 router.post("/reset-password", resetPassword);
 router.post("/reset-password-code", resetPasswordByCode);
