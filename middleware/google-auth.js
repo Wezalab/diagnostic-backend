@@ -2,13 +2,15 @@ const { OAuth2Client } = require('google-auth-library');
 require('dotenv').config();
 
 const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
+const GOOGLE_CLIENT_ID2 = process.env.GOOGLE_CLIENT_ID2;
+const VALID_AUDIENCES = [GOOGLE_CLIENT_ID, GOOGLE_CLIENT_ID2].filter(Boolean);
 const client = new OAuth2Client(GOOGLE_CLIENT_ID);
 
 async function verifyGoogleToken(idToken) {
   try {
     const ticket = await client.verifyIdToken({
       idToken: idToken,
-      audience: GOOGLE_CLIENT_ID,
+      audience: VALID_AUDIENCES,
     });
     
     const payload = ticket.getPayload();
