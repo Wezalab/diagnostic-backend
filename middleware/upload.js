@@ -68,6 +68,47 @@ const attachmentUpload = multer({
   }
 });
 
+// Chat files and action proofs: images plus PDF / Office / text documents
+const DOCUMENT_TYPES = [
+  'application/pdf',
+  'application/msword',
+  'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+  'application/vnd.ms-excel',
+  'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+  'application/vnd.ms-powerpoint',
+  'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+  'text/plain',
+  'text/csv',
+];
+
+const documentFileFilter = (req, file, cb) => {
+  if (file.mimetype.startsWith('image/') || DOCUMENT_TYPES.includes(file.mimetype)) {
+    cb(null, true);
+  } else {
+    cb(new Error('File type not allowed!'), false);
+  }
+};
+
+const documentUpload = multer({
+  storage: multer.diskStorage({
+    destination: (req, file, cb) => {
+      const uploadPath = path.join(__dirname, '..', 'uploads/attachments');
+      ensureUploadDir(uploadPath);
+      cb(null, uploadPath);
+    },
+    filename: (req, file, cb) => {
+      // Keep the original name after the uuid so the frontend can show it
+      const safeName = path.basename(file.originalname).replace(/[^\w.\-]+/g, '_');
+      cb(null, `${uuidv4()}__${safeName}`);
+    }
+  }),
+  fileFilter: documentFileFilter,
+  limits: {
+    fileSize: 10 * 1024 * 1024, // 10MB limit
+    files: 1
+  }
+});
+
 const profileUpload = multer({
   storage: createStorage('uploads/profiles'),
   fileFilter,
@@ -196,6 +237,13 @@ const handleUploadError = (error, req, res, next) => {
     }
   }
   
+  if (error.message === 'File type not allowed!') {
+    return res.status(400).json({
+      success: false,
+      message: 'Only images, PDF, Word, Excel, PowerPoint and text files are allowed.'
+    });
+  }
+
   if (error.message === 'Only image files are allowed!') {
     return res.status(400).json({
       success: false,
@@ -232,6 +280,7 @@ const deleteFile = (filePath) => {
 
 module.exports = {
   attachmentUpload,
+  documentUpload,
   profileUpload,
   coverUpload,
   processImage,
