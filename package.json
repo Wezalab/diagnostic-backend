@@ -41,6 +41,7 @@
   },
   "homepage": "https://github.com/Wezalab/diagnostic-backend#readme",
   "dependencies": {
+    "@anthropic-ai/sdk": "^1.4.0",
     "bcrypt": "^5.1.1",
     "cors": "^2.8.5",
     "dotenv": "^16.3.1",

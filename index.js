@@ -69,10 +69,10 @@ const HTTPS_PORT = process.env.HTTPS_PORT || 4443;
 const sslKeyPath = process.env.SSL_KEY_PATH || 'ssl/server.key';
 const sslCertPath = process.env.SSL_CERT_PATH || 'ssl/server.crt';
 
-const sslOptions = {
+const loadSslOptions = () => ({
   key: fs.readFileSync(path.join(__dirname, sslKeyPath)),
   cert: fs.readFileSync(path.join(__dirname, sslCertPath))
-};
+});
 
 // routes
 app.use("/test", (req, res) =>
@@ -98,6 +98,7 @@ app.use("/api/answer", require("./routes/answer-routes"));
 app.use("/api/invoice", require("./routes/invoice-routes"));
 app.use("/api/upload", require("./routes/upload-routes"));
 app.use("/api/coaching-requests", require("./routes/coaching_request_routes"));
+app.use("/api/ai", require("./routes/ai-routes"));
 
 // Database connection function
 const connectToDatabase = async () => {
@@ -126,7 +127,7 @@ httpServer.listen(HTTP_PORT, async () => {
 
 // Create HTTPS server only if not disabled (when behind reverse proxy)
 if (process.env.HTTPS_DISABLED !== 'true') {
-  const httpsServer = https.createServer(sslOptions, app);
+  const httpsServer = https.createServer(loadSslOptions(), app);
   httpsServer.listen(HTTPS_PORT, () => {
     console.log(`🔒 HTTPS Server listening on port ${HTTPS_PORT}`);
     console.log(`🔐 HTTPS URL: https://46.202.168.1:${HTTPS_PORT}`);

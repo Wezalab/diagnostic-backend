@@ -24,6 +24,8 @@ const goalSchema = new mongoose.Schema({
   },
   idCoach: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: false, },
   idCoachee: { type: [mongoose.Schema.Types.ObjectId], ref: "User", required: false, },
+  // Evaluation (Produit/Service, Finance, ...) the goal was generated from
+  evaluation: { type: mongoose.Schema.Types.ObjectId, ref: "Evaluation", required: false },
   cover: { type: String },
   label: { type: [String] },
   date_limite: { type: Date },
