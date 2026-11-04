@@ -1,5 +1,6 @@
 const router = require("express").Router();
 const { 
+  documentUpload,
   profileUpload, 
   coverUpload, 
   processImage, 
@@ -9,6 +10,24 @@ const {
 } = require("../middleware/upload");
 const User = require("../models/user-model");
 const path = require("path");
+
+// Chat file or action proof upload (images and documents); returns its URL
+router.post(
+  "/attachment",
+  documentUpload.single('file'),
+  processImage,
+  handleUploadError,
+  (req, res) => {
+    if (!req.file) {
+      return res.status(400).json({ success: false, message: "No file uploaded" });
+    }
+    return res.status(200).json({
+      success: true,
+      url: generateFileUrl(req, req.file.filename, 'attachments'),
+      name: req.file.originalname,
+    });
+  }
+);
 
 // Profile picture upload
 router.post(
