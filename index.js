@@ -32,7 +32,9 @@ const corsOptions = {
     'https://46.202.168.1',      // Nginx reverse proxy
     'http://46.202.168.1',       // Direct HTTP access
     'https://localhost:3000',
-    'https://localhost:3001'
+    'https://localhost:3001',
+    // Extra origins from .env, comma-separated (e.g. the frontend opened by its local network IP)
+    ...(process.env.CORS_ORIGINS || '').split(',').map((origin) => origin.trim()).filter(Boolean)
   ],
   credentials: true,
   optionsSuccessStatus: 200,
